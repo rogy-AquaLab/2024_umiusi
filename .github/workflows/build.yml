@@ -11,6 +11,16 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container: ros:iron-ros-base-jammy
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v4
-      # TODO
+        with:
+          path: src/2024_cavolinia
+      - run: |
+          . /opt/ros/iron/setup.bash
+          rosdep update
+          rosdep install -i --from-paths src --rosdistro iron -y
+          colcon build
