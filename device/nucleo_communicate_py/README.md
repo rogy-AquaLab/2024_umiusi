@@ -17,4 +17,6 @@ TODO: いつかC++に書き換える
 
 ## Launches
 
-TODO
+- `main_launch.py`: `main`Executableを`device`namespace下で実行
+- `receiver_launch.py`: `receiver`Executableを`device`namespace下で実行
+- `sender_launch.py`: `sender`Executableを`device`namespace下で実行
