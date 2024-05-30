@@ -7,6 +7,10 @@
   <maintainer email="hronok66@gmail.com">h1rono</maintainer>
   <license>MIT</license>
 
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>packet_interfaces</exec_depend>
+
   <export>
     <build_type>ament_python</build_type>
   </export>
