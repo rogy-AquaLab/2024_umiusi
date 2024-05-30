@@ -20,6 +20,9 @@ setup(
     tests_require=[],
     entry_points={
         'console_scripts': [
+            "depth = pi_i2c.depth:main",
+            "imu = pi_i2c.imu:main",
+            "all = pi_i2c.all:main"
         ],
     },
 )
