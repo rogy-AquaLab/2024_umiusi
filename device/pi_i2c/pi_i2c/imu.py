@@ -2,13 +2,13 @@ import sys
 
 import rclpy
 from rclpy.node import Node
-from sensor_msgs.msg import Imu
+from sensor_msgs.msg import Imu as ImuMsg
 
 
-class Depth(Node):
+class Imu(Node):
     def __init__(self) -> None:
         super().__init__("imu")
-        self._current_publisher = self.create_publisher(Imu, "imu", 10)
+        self._current_publisher = self.create_publisher(ImuMsg, "imu", 10)
         self._timer = self.create_timer(0.5, self._timer_callback)
 
     def _timer_callback(self) -> None:
@@ -19,7 +19,7 @@ class Depth(Node):
 
 def main(args=sys.argv):
     rclpy.init(args=args)
-    imu = Depth()
+    imu = Imu()
     rclpy.spin(imu)
     imu.destroy_node()
     rclpy.shutdown()
