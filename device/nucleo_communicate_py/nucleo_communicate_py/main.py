@@ -9,12 +9,16 @@ from rclpy.executors import SingleThreadedExecutor, ExternalShutdownException
 from .receiver import Receiver
 from .sender import Sender
 
+from .mutex_serial import MutexSerial
+
 
 def main(args=sys.argv):
     rclpy.init(args=args)
+    # FIXME: receiver.pyのコメント参照
+    mutex_serial = MutexSerial("/dev/ttyACM0")
     try:
-        sender = Sender()
-        receiver = Receiver()
+        sender = Sender(mutex_serial)
+        receiver = Receiver(mutex_serial)
 
         executor = SingleThreadedExecutor()
         executor.add_node(sender)
