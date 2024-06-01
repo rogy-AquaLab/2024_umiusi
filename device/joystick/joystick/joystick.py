@@ -1,6 +1,6 @@
 import sys
 
-import pygame.joystick
+import pygame
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Joy
@@ -18,7 +18,8 @@ class Joystick(Node):
         self.get_logger().info(f"Using controller: {name}")
 
     def _timer_callback(self):
-        self.get_logger().trace("tick")
+        self.get_logger().info("tick")
+        pygame.event.pump()
 
         numaxes = self._joystick.get_numaxes()
         numbuttons = self._joystick.get_numbuttons()
@@ -32,11 +33,11 @@ class Joystick(Node):
 
 def main(args=sys.argv):
     rclpy.init(args=args)
-    pygame.joystick.init()
+    pygame.init()
     node = Joystick()
     rclpy.spin(node)
     node.destroy_node()
-    pygame.joystick.quit()
+    pygame.quit()
     rclpy.shutdown()
 
 
