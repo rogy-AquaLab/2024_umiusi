@@ -20,6 +20,7 @@ setup(
     tests_require=[],
     entry_points={
         'console_scripts': [
+            "joystick = joystick.joystick:main"
         ],
     },
 )
