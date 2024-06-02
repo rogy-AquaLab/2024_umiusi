@@ -29,7 +29,7 @@ class Recv:
         return (flex1, flex2, current, voltage)
 
     def map_values(
-        flex1: int, flex2: int, current: int, voltage: int
+            self, flex1: int, flex2: int, current: int, voltage: int
     ) -> tuple[int, int, float, float]:
         # TODO: current, voltageの計算はnucleo側と要相談
         return (flex1, flex2, current / 0xFFFF, voltage / 0xFFFF)
