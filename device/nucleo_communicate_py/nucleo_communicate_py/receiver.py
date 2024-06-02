@@ -59,8 +59,8 @@ class Receiver(Node):
         self._flex1_publisher.publish(Flex(value=flex1))
         self._flex2_publisher.publish(Flex(value=flex2))
         # TODO: データのマッピングはnucleo側と相談
-        self._current_publisher.publish(Flex(value=current))
-        self._voltage_publisher.publish(Flex(value=voltage))
+        self._current_publisher.publish(Current(value=current))
+        self._voltage_publisher.publish(Voltage(value=voltage))
 
 
 def main(args=sys.argv):
