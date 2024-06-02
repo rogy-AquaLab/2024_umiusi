@@ -52,7 +52,7 @@ class Receiver(Node):
         self._recv = Recv(mutex_serial)
 
     def _timer_callback(self) -> None:
-        self.get_logger().trace("tick")
+        self.get_logger().debug("tick")
         flex1, flex2, current, voltage = self._recv.receive_raw()
         self.get_logger().info(f"received from nucleo: {flex1=}, {flex2=}, {current=}, {voltage=}")
         flex1, flex2, current, voltage = self._recv.map_values(flex1, flex2, current, voltage)

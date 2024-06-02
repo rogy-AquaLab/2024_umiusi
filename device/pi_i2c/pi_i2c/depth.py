@@ -1,8 +1,8 @@
 import sys
 
 import rclpy
-from rclpy.node import Node
 from packet_interfaces.msg import Depth as DepthMsg
+from rclpy.node import Node
 
 
 class Depth(Node):
@@ -14,7 +14,7 @@ class Depth(Node):
     def _timer_callback(self) -> None:
         # TODO
         # 深さセンサーからデータを取得してpublish
-        self.get_logger().info("tick")
+        self.get_logger().debug("tick")
 
 
 def main(args=sys.argv):
