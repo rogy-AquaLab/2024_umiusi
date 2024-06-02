@@ -1,10 +1,9 @@
 import sys
 
 import rclpy
-from rclpy.node import Node
 from packet_interfaces.msg import Current, Flex, Voltage
+from rclpy.node import Node
 from serial import Serial
-from std_msgs.msg import Header
 
 from .mutex_serial import MutexSerial
 
