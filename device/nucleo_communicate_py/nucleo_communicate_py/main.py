@@ -4,12 +4,11 @@
 import sys
 
 import rclpy
-from rclpy.executors import SingleThreadedExecutor, ExternalShutdownException
-
-from .receiver import Receiver
-from .sender import Sender
+from rclpy.executors import MultiThreadedExecutor, ExternalShutdownException
 
 from .mutex_serial import MutexSerial
+from .receiver import Receiver
+from .sender import Sender
 
 
 def main(args=sys.argv):
@@ -20,7 +19,7 @@ def main(args=sys.argv):
         sender = Sender(mutex_serial)
         receiver = Receiver(mutex_serial)
 
-        executor = SingleThreadedExecutor()
+        executor = MultiThreadedExecutor()
         executor.add_node(sender)
         executor.add_node(receiver)
         executor.spin()
