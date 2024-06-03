@@ -1,7 +1,7 @@
 import sys
 
 import rclpy
-from rclpy.executors import SingleThreadedExecutor, ExternalShutdownException
+from rclpy.executors import MultiThreadedExecutor, ExternalShutdownException
 
 from .depth import Depth
 from .imu import Imu
@@ -13,7 +13,7 @@ def main(args=sys.argv):
         depth = Depth()
         imu = Imu()
 
-        executor = SingleThreadedExecutor()
+        executor = MultiThreadedExecutor()
         executor.add_node(depth)
         executor.add_node(imu)
         executor.spin()
