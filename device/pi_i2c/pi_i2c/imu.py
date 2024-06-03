@@ -14,7 +14,7 @@ class Imu(Node):
     def _timer_callback(self) -> None:
         # TODO
         # IMUからデータを取得してpublish
-        self.get_logger().info("tick")
+        self.get_logger().debug("tick")
 
 
 def main(args=sys.argv):

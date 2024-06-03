@@ -1,10 +1,9 @@
 import sys
 
 import rclpy
-from rclpy.node import Node
 from packet_interfaces.msg import Current, Flex, Voltage
+from rclpy.node import Node
 from serial import Serial
-from std_msgs.msg import Header
 
 from .mutex_serial import MutexSerial
 
@@ -30,7 +29,7 @@ class Recv:
         return (flex1, flex2, current, voltage)
 
     def map_values(
-        flex1: int, flex2: int, current: int, voltage: int
+            self, flex1: int, flex2: int, current: int, voltage: int
     ) -> tuple[int, int, float, float]:
         # TODO: current, voltageの計算はnucleo側と要相談
         return (flex1, flex2, current / 0xFFFF, voltage / 0xFFFF)
@@ -52,15 +51,15 @@ class Receiver(Node):
         self._recv = Recv(mutex_serial)
 
     def _timer_callback(self) -> None:
-        self.get_logger().trace("tick")
+        self.get_logger().debug("tick")
         flex1, flex2, current, voltage = self._recv.receive_raw()
         self.get_logger().info(f"received from nucleo: {flex1=}, {flex2=}, {current=}, {voltage=}")
         flex1, flex2, current, voltage = self._recv.map_values(flex1, flex2, current, voltage)
         self._flex1_publisher.publish(Flex(value=flex1))
         self._flex2_publisher.publish(Flex(value=flex2))
         # TODO: データのマッピングはnucleo側と相談
-        self._current_publisher.publish(Flex(value=current))
-        self._voltage_publisher.publish(Flex(value=voltage))
+        self._current_publisher.publish(Current(value=current))
+        self._voltage_publisher.publish(Voltage(value=voltage))
 
 
 def main(args=sys.argv):

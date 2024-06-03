@@ -18,7 +18,7 @@ class Joystick(Node):
         self.get_logger().info(f"Using controller: {name}")
 
     def _timer_callback(self):
-        self.get_logger().info("tick")
+        self.get_logger().debug("tick")
         pygame.event.pump()
 
         numaxes = self._joystick.get_numaxes()
