@@ -1,14 +1,17 @@
 #include <cv_bridge/cv_bridge.hpp>
+#include <image_transport/image_transport.hpp>
 #include <opencv2/opencv.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/image.hpp>
 
-class ImageReceiverNode : public rclcpp::Node {
+class CameraReader : public rclcpp::Node {
 public:
-    ImageReceiverNode();
+    CameraReader();
 
 private:
-    void image_callback(const sensor_msgs::msg::Image::SharedPtr msg);
+    void timer_callback();
 
-    rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr subscription_;
+    image_transport::Publisher   publisher_;
+    rclcpp::TimerBase::SharedPtr timer_;
+    cv::VideoCapture             cap_{ 0 }; // Open default camera
 };

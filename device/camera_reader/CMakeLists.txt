@@ -26,13 +26,13 @@ include_directories(
 add_executable(camera_reader src/camera_reader.cpp src/main.cpp)
 
 # Link dependencies
-ament_target_dependencies(camera_reader_node rclcpp sensor_msgs cv_bridge image_transport)
+ament_target_dependencies(camera_reader rclcpp sensor_msgs cv_bridge image_transport)
 
-target_link_libraries(camera_reader_node ${OpenCV_LIBRARIES})
+target_link_libraries(camera_reader ${OpenCV_LIBRARIES})
 
 # Install targets
 install(TARGETS
-  camera_reader_node
+  camera_reader
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)

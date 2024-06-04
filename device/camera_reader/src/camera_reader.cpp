@@ -1,20 +1,27 @@
 #include "camera_reader/camera_reader.hpp"
 
-ImageReceiverNode::ImageReceiverNode() : Node("camera_reader_node") {
-    subscription_ = this->create_subscription<sensor_msgs::msg::Image>(
-        "camera/image",
-        10,
-        std::bind(&ImageReceiverNode::image_callback, this, std::placeholders::_1)
+CameraReader::CameraReader() : Node("camera_reader") {
+    publisher_ = image_transport::create_publisher(this, "camera/image");
+
+    // Open the default camera
+    cap_.open(0); // 0 is typically the default camera index
+
+    if (!cap_.isOpened()) {
+        RCLCPP_ERROR(this->get_logger(), "Failed to open camera");
+        return;
+    }
+
+    timer_ = this->create_wall_timer(
+        std::chrono::milliseconds(100), std::bind(&CameraNode::timer_callback, this)
     );
 }
 
-void ImageReceiverNode::image_callback(const sensor_msgs::msg::Image::SharedPtr msg) {
-    try {
-        cv::Mat frame = cv_bridge::toCvCopy(msg, "bgr8")->image;
-        cv::imshow("Received Image", frame);
-        cv::waitKey(1);
-    } catch (cv_bridge::Exception& e) {
-        RCLCPP_ERROR(this->get_logger(), "cv_bridge exception: %s", e.what());
-        return;
+void CameraReader::timer_callback() {
+    cv::Mat frame;
+    cap_ >> frame; // Capture frame from camera
+    if (!frame.empty()) {
+        auto msg
+            = cv_bridge::CvImage(std_msgs::msg::Header(), "bgr8", frame).toImageMsg();
+        publisher_.publish(msg);
     }
 }
