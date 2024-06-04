@@ -20,6 +20,8 @@ private:
     auto para_move_power(const std::pair<double, double>& stick
     ) -> packet_interfaces::msg::Power;
 
+    auto stop_power() -> packet_interfaces::msg::Power;
+
 public:
     App(const rclcpp::NodeOptions& options = rclcpp::NodeOptions());
 };

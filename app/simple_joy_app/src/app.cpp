@@ -31,7 +31,8 @@ void app::App::joy_callback(const sensor_msgs::msg::Joy& msg) {
         return;
     }
     if (!rstick_effective) {
-        // TODO: 何もしない
+        packet_interfaces::msg::Power msg = this->stop_power();
+        this->power_publisher->publish(msg);
         return;
     }
     if (rstick_h_effective) {
@@ -81,6 +82,28 @@ auto app::App::para_move_power(const std::pair<double, double>& stick
     msg.bldc[3] = bldc1_msg;
 
     constexpr uint16_t servo_center = (servo_min + servo_max) / 2;
+
+    msg.servo[0] = servo_center;
+    msg.servo[1] = servo_center;
+    msg.servo[2] = servo_center;
+    msg.servo[3] = servo_center;
+
+    return msg;
+}
+
+auto app::App::stop_power() -> packet_interfaces::msg::Power {
+    // FIXME: use parameter
+    constexpr uint16_t bldc_center  = 1480;
+    constexpr uint16_t servo_min    = 500;
+    constexpr uint16_t servo_max    = 2400;
+    constexpr uint16_t servo_center = (servo_min + servo_max) / 2;
+
+    packet_interfaces::msg::Power msg{};
+
+    msg.bldc[0] = bldc_center;
+    msg.bldc[1] = bldc_center;
+    msg.bldc[2] = bldc_center;
+    msg.bldc[3] = bldc_center;
 
     msg.servo[0] = servo_center;
     msg.servo[1] = servo_center;
