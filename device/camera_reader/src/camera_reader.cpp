@@ -17,8 +17,7 @@ CameraReader::CameraReader() : Node("camera_reader") {
 }
 
 void CameraReader::timer_callback() {
-    cv::Mat frame;
-    cap_ >> frame; // Capture frame from camera
+    cv::Mat frame = cap_.read();
     if (!frame.empty()) {
         auto msg
             = cv_bridge::CvImage(std_msgs::msg::Header(), "bgr8", frame).toImageMsg();
