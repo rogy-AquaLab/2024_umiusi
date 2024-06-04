@@ -1,4 +1,4 @@
-#include "my_camera_cpp_package/camera_node.hpp"
+#include "camera_reader/camera_reader.hpp"
 #include <rclcpp/rclcpp.hpp>
 
 int main(int argc, char* argv[]) {
