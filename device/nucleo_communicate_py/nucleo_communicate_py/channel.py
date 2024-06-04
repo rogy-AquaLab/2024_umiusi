@@ -41,15 +41,15 @@ class Channel(Node):
 
     # Receiver implementation
     def _recv_callback(self):
-        self.get_logger().trace("tick")
+        self.get_logger().debug("tick")
         flex1, flex2, current, voltage = self._recv.receive_raw()
         self.get_logger().info(f"received from nucleo: {flex1=}, {flex2=}, {current=}, {voltage=}")
         flex1, flex2, current, voltage = self._recv.map_values(flex1, flex2, current, voltage)
         self._flex1_publisher.publish(Flex(value=flex1))
         self._flex2_publisher.publish(Flex(value=flex2))
         # TODO: データのマッピングはnucleo側と相談
-        self._current_publisher.publish(Flex(value=current))
-        self._voltage_publisher.publish(Flex(value=voltage))
+        self._current_publisher.publish(Current(value=current))
+        self._voltage_publisher.publish(Voltage(value=voltage))
 
     # Sender implementations
     def _quit_callback(self, _quit: Empty) -> None:
