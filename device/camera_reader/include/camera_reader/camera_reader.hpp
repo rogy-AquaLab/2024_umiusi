@@ -13,5 +13,5 @@ private:
 
     image_transport::Publisher   publisher_;
     rclcpp::TimerBase::SharedPtr timer_;
-    cv::VideoCapture             cap_{ 0 }; // Open default camera
+    cv::VideoCapture             cap_;
 };
