@@ -36,7 +36,7 @@ AlignConsecutiveShortCaseStatements:
   Enabled: true
   AcrossEmptyLines: false
   AcrossComments: false
-  AlignCaseArrows: false
+  #  AlignCaseArrows: false
   AlignCaseColons: false
 
 AlignEscapedNewlines: Left
@@ -138,11 +138,11 @@ InsertBraces: true
 InsertNewlineAtEOF: true
 InsertTrailingCommas: Wrapped
 IntegerLiteralSeparator:
-  Binary: 4
+  Binary: 0
   BinaryMinDigits: 0
-  Decimal: 3
+  Decimal: 0
   DecimalMinDigits: 0
-  Hex: 4
+  Hex: 0
   HexMinDigits: 0
 #JavaScriptQuotes: Leave
 #JavaScriptWrapImports: true
