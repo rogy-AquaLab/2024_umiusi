@@ -1,11 +1,14 @@
 #include "power_map/power_map.hpp"
-#include "rclcpp_components/register_node_macro.hpp"
+
 #include <cstdint>
-#include <packet_interfaces/msg/detail/power__struct.hpp>
-#include <power_map_msg/msg/detail/normalized_power__struct.hpp>
+#include <string>
+
 #include <rclcpp/parameter.hpp>
 #include <rclcpp/parameter_event_handler.hpp>
-#include <string>
+#include <rclcpp_components/register_node_macro.hpp>
+
+#include <packet_interfaces/msg/power.hpp>
+#include <power_map_msg/msg/normalized_power.hpp>
 
 auto power_map::PowerMap::create_bldc_center_cb(size_t i
 ) -> rclcpp::ParameterCallbackHandle::ParameterCallbackType {
