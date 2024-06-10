@@ -1,6 +1,6 @@
 #include "camera_reader/camera_reader.hpp"
 
-CameraReader::CameraReader() : Node("camera_reader") {
+CameraReader::CameraReader() : Node("camera") {
     publisher_ = image_transport::create_publisher(this, "camera/image");
 
     // Open the default camera
@@ -19,7 +19,7 @@ CameraReader::CameraReader() : Node("camera_reader") {
 void CameraReader::timer_callback() {
     cv::Mat frame = cap_.read();
     if (!frame.empty()) {
-        auto msg
+        const auto msg
             = cv_bridge::CvImage(std_msgs::msg::Header(), "bgr8", frame).toImageMsg();
         publisher_.publish(msg);
     }

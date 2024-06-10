@@ -16,14 +16,15 @@ find_package(OpenCV REQUIRED)
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 
-# Include directories
-include_directories(
-  include
-  ${OpenCV_INCLUDE_DIRS}  # OpenCVの追加
-)
-
 # Create executable
 add_executable(camera_reader src/camera_reader.cpp src/main.cpp)
+
+target_include_directories(camera_reader
+  PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+  ${OpenCV_INCLUDE_DIRS}
+)
 
 # Link dependencies
 ament_target_dependencies(camera_reader rclcpp sensor_msgs cv_bridge image_transport)
