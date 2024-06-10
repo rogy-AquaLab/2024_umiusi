@@ -10,6 +10,7 @@
 #include <packet_interfaces/msg/power.hpp>
 #include <power_map_msg/msg/normalized_power.hpp>
 
+// FIXME: create_***_cbのコピペを辞めたい
 auto power_map::PowerMap::create_bldc_center_cb(size_t i
 ) -> rclcpp::ParameterCallbackHandle::ParameterCallbackType {
     return [this, i](const rclcpp::Parameter& p) {
@@ -87,7 +88,7 @@ auto power_map::PowerMap::subscription_callback(
 
 power_map::PowerMap::PowerMap(const rclcpp::NodeOptions& options) :
     rclcpp::Node("power_map", options) {
-    constexpr int DEFAULT_BLDC_CENTER          = 1048;
+    constexpr int DEFAULT_BLDC_CENTER          = 1480;
     constexpr int DEFAULT_BLDC_POSITIVE_RADIUS = 250;
     constexpr int DEFAULT_BLDC_NEGATIVE_RADIUS = 250;
     constexpr int DEFAULT_SERVO_MIN            = 500;
@@ -147,9 +148,7 @@ power_map::PowerMap::PowerMap(const rclcpp::NodeOptions& options) :
         }
     }
 
-    this->publisher = this->create_publisher<packet_interfaces::msg::Power>(
-        "/packet/order/power", 10
-    );
+    this->publisher = this->create_publisher<packet_interfaces::msg::Power>("power", 10);
     this->subscription = this->create_subscription<power_map_msg::msg::NormalizedPower>(
         "normalized_power",
         10,
