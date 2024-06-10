@@ -1,0 +1,26 @@
+/**:
+  ros__parameters:
+    # 1
+    bldc_center1: 1480
+    bldc_negative_radius1: 250
+    bldc_positive_radius1: 250
+    servo_max1: 2400
+    servo_min1: 500
+    # 2
+    bldc_center2: 1480
+    bldc_negative_radius2: 250
+    bldc_positive_radius2: 250
+    servo_max2: 2400
+    servo_min2: 500
+    # 3
+    bldc_center3: 1480
+    bldc_negative_radius3: 250
+    bldc_positive_radius3: 250
+    servo_max3: 2400
+    servo_min3: 500
+    # 4
+    bldc_center4: 1480
+    bldc_negative_radius4: 250
+    bldc_positive_radius4: 250
+    servo_max4: 2400
+    servo_min4: 500
