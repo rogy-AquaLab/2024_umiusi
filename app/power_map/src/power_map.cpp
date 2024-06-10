@@ -1,4 +1,7 @@
 #include "power_map/power_map.hpp"
+#include <cstdint>
+#include <packet_interfaces/msg/detail/power__struct.hpp>
+#include <power_map_msg/msg/detail/normalized_power__struct.hpp>
 #include <rclcpp/parameter.hpp>
 #include <rclcpp/parameter_event_handler.hpp>
 #include <string>
@@ -54,6 +57,28 @@ auto power_map::PowerMap::create_servo_max_cb(size_t i
         );
         this->configs[i].servo_max(p.as_int());
     };
+}
+
+auto power_map::PowerMap::subscription_callback(
+    const power_map_msg::msg::NormalizedPower& msg
+) -> void {
+    RCLCPP_DEBUG(this->get_logger(), "received normalized power");
+    packet_interfaces::msg::Power pub_msg{};
+    for (size_t i = 0; i < 4; ++i) {
+        // FIXME: formatが
+        const auto& config      = this->configs[i];
+        const float bldc_radius = msg.bldc[i] < 0 ? config.bldc_negative_radius()
+                                                  : config.bldc_positive_radius();
+        pub_msg.bldc[i]         = static_cast<std::uint16_t>(
+            config.bldc_center() + static_cast<int>(msg.bldc[i] * bldc_radius)
+        );
+        const float servo_range
+            = static_cast<float>(config.servo_max() - config.servo_min());
+        pub_msg.servo[i] = static_cast<std::uint16_t>(
+            config.servo_min() + static_cast<int>((msg.servo[i] + 1) / 2.0 * servo_range)
+        );
+    }
+    this->publisher->publish(pub_msg);
 }
 
 power_map::PowerMap::PowerMap(const rclcpp::NodeOptions& options) :
@@ -117,4 +142,15 @@ power_map::PowerMap::PowerMap(const rclcpp::NodeOptions& options) :
             this->cb_handles[i].servo_max(std::move(cb));
         }
     }
+
+    this->publisher = this->create_publisher<packet_interfaces::msg::Power>(
+        "/packet/order/power", 10
+    );
+    this->subscription = this->create_subscription<power_map_msg::msg::NormalizedPower>(
+        "normalized_power",
+        10,
+        [this](const power_map_msg::msg::NormalizedPower& msg) {
+            this->subscription_callback(msg);
+        }
+    );
 }
