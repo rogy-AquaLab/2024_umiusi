@@ -17,7 +17,7 @@ find_package(power_map_msg REQUIRED)
 
 add_library(power_map
     SHARED
-    # TODO
+    src/power_map.cpp
 )
 
 ament_target_dependencies(power_map
