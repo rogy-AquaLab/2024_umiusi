@@ -10,7 +10,7 @@ Imshow::Imshow() : Node("imshow") {
 
 void Imshow::image_callback(const sensor_msgs::msg::Image::SharedPtr msg) {
     try {
-        cv::Mat frame = cv_bridge::toCvCopy(msg, "bgr8")->image;
+        const cv::Mat& frame = cv_bridge::toCvCopy(msg, "bgr8")->image;
         cv::imshow("Received Image", frame);
         cv::waitKey(1);
     } catch (cv_bridge::Exception& e) {
