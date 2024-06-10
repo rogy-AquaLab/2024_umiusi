@@ -1,4 +1,5 @@
 #include "power_map/power_map.hpp"
+#include "rclcpp_components/register_node_macro.hpp"
 #include <cstdint>
 #include <packet_interfaces/msg/detail/power__struct.hpp>
 #include <power_map_msg/msg/detail/normalized_power__struct.hpp>
@@ -154,3 +155,5 @@ power_map::PowerMap::PowerMap(const rclcpp::NodeOptions& options) :
         }
     );
 }
+
+RCLCPP_COMPONENTS_REGISTER_NODE(power_map::PowerMap)
