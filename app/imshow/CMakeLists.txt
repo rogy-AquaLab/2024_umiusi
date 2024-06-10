@@ -16,14 +16,14 @@ find_package(OpenCV REQUIRED)
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 
-# Include directories
-include_directories(
-  include
-  ${OpenCV_INCLUDE_DIRS}  # OpenCVの追加
-)
-
 # Create executable
 add_executable(imshow src/imshow.cpp src/main.cpp)
+target_include_directories(imshow
+  PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+  ${OpenCV_INCLUDE_DIRS}
+)
 
 # Link dependencies
 ament_target_dependencies(imshow rclcpp sensor_msgs cv_bridge image_transport)
