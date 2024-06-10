@@ -1,10 +1,11 @@
-#include <memory>
-#include "rclcpp/rclcpp.hpp"
-#include "std_msgs/msg/string.hpp"
 #ifndef PACKET_COMPOSED_SENSORPACKET_HPP
 #define PACKET_COMPOSED_SENSORPACKET_HPP
 
-class composed : public rclcpp::Node {
+#include <memory>
+#include "rclcpp/rclcpp.hpp"
+#include "std_msgs/msg/string.hpp"
+
+class Composed : public rclcpp::Node {
 private:
 
     std::shared_ptr<rclcpp::Publisher<std_msgs::msg::String>> _publisher;
@@ -13,7 +14,7 @@ private:
     void _loop();
 
 public:
-    composed();
+    Composed();
 };
 
 #endif // PACKET_COMPOSED_SENSORPACKET_HPP

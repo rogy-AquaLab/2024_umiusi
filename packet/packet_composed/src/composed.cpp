@@ -4,7 +4,7 @@
 
 #include "packet_composed/sensorspacket.hpp"
 
-void composed::_loop() {
+void Composed::_loop() {
     std::stringstream ss;
     ss << "Hello, world! " << _count;
     std_msgs::msg::String msg{};
@@ -15,7 +15,7 @@ void composed::_loop() {
 }
 
 
-composed::composed() :
+Composed::Composed() :
     rclcpp::Node("composed"),
     _publisher(),
     _timer(),  
@@ -23,6 +23,6 @@ composed::composed() :
 {
     using namespace std::chrono_literals;
     _publisher = this->create_publisher<std_msgs::msg::String>("/sensorspacket", 10);
-    auto loop = std::bind(&composed::_loop, this);
+    auto loop = std::bind(&Composed::_loop, this);
     _timer = this->create_wall_timer(500ms, loop);
 }
