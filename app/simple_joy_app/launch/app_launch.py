@@ -7,6 +7,7 @@ def generate_launch_description():
         Node(
             package="simple_joy_app",
             executable="app",
-            namespace="app"
+            namespace="app",
+            remappings=[("/app/joystick", "/device/joystick")]
         )
     ])

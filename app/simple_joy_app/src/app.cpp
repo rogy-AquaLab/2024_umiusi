@@ -99,10 +99,9 @@ app::App::App(const rclcpp::NodeOptions& options) :
     subscription(),
     power_publisher() {
     using std::placeholders::_1;
-    auto callback      = std::bind(&app::App::joy_callback, this, _1);
-    this->subscription = this->create_subscription<sensor_msgs::msg::Joy>(
-        "/device/joystick", 10, callback
-    );
+    auto callback = std::bind(&app::App::joy_callback, this, _1);
+    this->subscription
+        = this->create_subscription<sensor_msgs::msg::Joy>("joystick", 10, callback);
     this->power_publisher
         = this->create_publisher<NormalizedPower>("normalized_power", 10);
 }
