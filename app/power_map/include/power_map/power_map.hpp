@@ -20,12 +20,12 @@ namespace power_map {
 class PowerMap : public rclcpp::Node {
 private:
     using Config    = Container<int>;
-    using CHandlers = Container<std::shared_ptr<rclcpp::ParameterCallbackHandle>>;
+    using CbHandles = Container<std::shared_ptr<rclcpp::ParameterCallbackHandle>>;
 
     std::shared_ptr<rclcpp::ParameterEventHandler> param_cb;
 
     std::array<Config, 4>    configs;
-    std::array<CHandlers, 4> cb_handles;
+    std::array<CbHandles, 4> cb_handles;
 
     rclcpp::Publisher<packet_interfaces::msg::Power>::SharedPtr publisher;
 
