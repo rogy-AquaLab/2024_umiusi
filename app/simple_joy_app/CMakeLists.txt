@@ -12,6 +12,7 @@ find_package(ament_cmake REQUIRED)
 # find_package(<dependency> REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(power_map_msg REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(packet_interfaces REQUIRED)
 
@@ -23,6 +24,7 @@ add_library(simple_joy_app
 ament_target_dependencies(simple_joy_app
     rclcpp
     sensor_msgs
+    power_map_msg
     rclcpp_components
     packet_interfaces
 )

@@ -10,6 +10,7 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
   <depend>rclcpp</depend>
   <depend>sensor_msgs</depend>
+  <depend>power_map_msg</depend>
   <depend>rclcpp_components</depend>
   <depend>packet_interfaces</depend>
 
