@@ -5,6 +5,8 @@
 
 #include "simple_joy_app/app.hpp"
 
+using power_map_msg::msg::NormalizedPower;
+
 void app::App::joy_callback(const sensor_msgs::msg::Joy& msg) {
     RCLCPP_INFO_STREAM(this->get_logger(), "received joystick msg");
     // https://www.pygame.org/docs/ref/joystick.html#playstation-4-controller-pygame-2-x
@@ -26,12 +28,12 @@ void app::App::joy_callback(const sensor_msgs::msg::Joy& msg) {
     const bool rstick_effective   = rstick_h_effective || rstick_v_effective;
 
     if (lstick_effective) {
-        packet_interfaces::msg::Power msg = this->para_move_power({ lstick_v, lstick_h });
+        NormalizedPower msg = this->para_move_power({ lstick_v, lstick_h });
         this->power_publisher->publish(msg);
         return;
     }
     if (!rstick_effective) {
-        packet_interfaces::msg::Power msg = this->stop_power();
+        NormalizedPower msg = this->stop_power();
         this->power_publisher->publish(msg);
         return;
     }
@@ -44,71 +46,50 @@ void app::App::joy_callback(const sensor_msgs::msg::Joy& msg) {
 }
 
 auto app::App::para_move_power(const std::pair<double, double>& stick
-) -> packet_interfaces::msg::Power {
+) -> NormalizedPower {
     // FIXME: C++20...?
     constexpr double pi = 3.141592653589793;
-    // FIXME: use parameter
-    constexpr uint16_t bldc_center = 1480;
-    constexpr uint16_t bldc_radius = 250; // TODO: check this
-    constexpr uint16_t servo_min   = 500;
-    constexpr uint16_t servo_max   = 2400;
     // TODO: provide explanation
     constexpr double theta = pi / 4;
     // Left-Up, Right-Down
-    double bldc1 = stick.first * cos(theta) + stick.second * sin(theta);
+    float bldc1 = stick.first * cos(theta) + stick.second * sin(theta);
     // Right-Up, Left-Down
-    double       bldc2        = stick.first * cos(theta) - stick.second * sin(theta);
+    float bldc2 = stick.first * cos(theta) - stick.second * sin(theta);
+
     const double bldc_abc_max = std::max(std::abs(bldc1), std::abs(bldc2));
-    // constrain
     if (bldc_abc_max > 1) {
         const double scale = 1 / bldc_abc_max;
         bldc1 *= scale;
         bldc2 *= scale;
     }
 
-    packet_interfaces::msg::Power msg{};
+    NormalizedPower msg{};
 
-    const uint16_t bldc1_msg = static_cast<uint16_t>(
-        static_cast<double>(bldc_center) + static_cast<double>(bldc_radius) * bldc1
-    );
-    const uint16_t bldc2_msg = static_cast<uint16_t>(
-        static_cast<double>(bldc_center) + static_cast<double>(bldc_radius) * bldc2
-    );
+    msg.bldc[0] = bldc1;
+    msg.bldc[1] = bldc2;
+    msg.bldc[2] = bldc2;
+    msg.bldc[3] = bldc1;
 
-    // TODO: Fix order with param
-    msg.bldc[0] = bldc1_msg;
-    msg.bldc[1] = bldc2_msg;
-    msg.bldc[2] = bldc2_msg;
-    msg.bldc[3] = bldc1_msg;
-
-    constexpr uint16_t servo_center = (servo_min + servo_max) / 2;
-
-    msg.servo[0] = servo_center;
-    msg.servo[1] = servo_center;
-    msg.servo[2] = servo_center;
-    msg.servo[3] = servo_center;
+    msg.servo[0] = 0.0;
+    msg.servo[1] = 0.0;
+    msg.servo[2] = 0.0;
+    msg.servo[3] = 0.0;
 
     return msg;
 }
 
-auto app::App::stop_power() -> packet_interfaces::msg::Power {
-    // FIXME: use parameter
-    constexpr uint16_t bldc_center  = 1480;
-    constexpr uint16_t servo_min    = 500;
-    constexpr uint16_t servo_max    = 2400;
-    constexpr uint16_t servo_center = (servo_min + servo_max) / 2;
+auto app::App::stop_power() -> NormalizedPower {
+    NormalizedPower msg{};
 
-    packet_interfaces::msg::Power msg{};
+    msg.bldc[0] = 0.0;
+    msg.bldc[1] = 0.0;
+    msg.bldc[2] = 0.0;
+    msg.bldc[3] = 0.0;
 
-    msg.bldc[0] = bldc_center;
-    msg.bldc[1] = bldc_center;
-    msg.bldc[2] = bldc_center;
-    msg.bldc[3] = bldc_center;
-
-    msg.servo[0] = servo_center;
-    msg.servo[1] = servo_center;
-    msg.servo[2] = servo_center;
-    msg.servo[3] = servo_center;
+    msg.servo[0] = 0.0;
+    msg.servo[1] = 0.0;
+    msg.servo[2] = 0.0;
+    msg.servo[3] = 0.0;
 
     return msg;
 }
@@ -122,9 +103,8 @@ app::App::App(const rclcpp::NodeOptions& options) :
     this->subscription = this->create_subscription<sensor_msgs::msg::Joy>(
         "/device/joystick", 10, callback
     );
-    this->power_publisher = this->create_publisher<packet_interfaces::msg::Power>(
-        "/device/order/power", 10
-    );
+    this->power_publisher
+        = this->create_publisher<NormalizedPower>("normalized_power", 10);
 }
 
 RCLCPP_COMPONENTS_REGISTER_NODE(app::App)

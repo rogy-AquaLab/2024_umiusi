@@ -3,9 +3,10 @@
 
 #include <utility>
 
-#include "packet_interfaces/msg/power.hpp"
-#include "sensor_msgs/msg/joy.hpp"
-#include "rclcpp/rclcpp.hpp"
+#include <rclcpp/rclcpp.hpp>
+#include <sensor_msgs/msg/joy.hpp>
+
+#include <power_map_msg/msg/normalized_power.hpp>
 
 namespace app {
 
@@ -13,14 +14,14 @@ class App : public rclcpp::Node {
 private:
     rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr subscription;
 
-    rclcpp::Publisher<packet_interfaces::msg::Power>::SharedPtr power_publisher;
+    rclcpp::Publisher<power_map_msg::msg::NormalizedPower>::SharedPtr power_publisher;
 
     void joy_callback(const sensor_msgs::msg::Joy& msg);
 
     auto para_move_power(const std::pair<double, double>& stick
-    ) -> packet_interfaces::msg::Power;
+    ) -> power_map_msg::msg::NormalizedPower;
 
-    auto stop_power() -> packet_interfaces::msg::Power;
+    auto stop_power() -> power_map_msg::msg::NormalizedPower;
 
 public:
     App(const rclcpp::NodeOptions& options = rclcpp::NodeOptions());
