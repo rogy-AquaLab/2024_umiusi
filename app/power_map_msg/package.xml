@@ -2,10 +2,10 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>power_map_msg</name>
-  <version>0.0.0</version>
-  <description>TODO: Package description</description>
-  <maintainer email="hronok66@gmail.com">pi</maintainer>
-  <license>TODO: License declaration</license>
+  <version>0.1.0</version>
+  <description>正規化されたBLDC, サーボの値</description>
+  <maintainer email="hronok66@gmail.com">h1rono</maintainer>
+  <license>MIT</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
   <depend>std_msgs</depend>
