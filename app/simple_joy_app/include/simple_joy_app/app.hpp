@@ -21,6 +21,8 @@ private:
     auto para_move_power(const std::pair<double, double>& stick
     ) -> power_map_msg::msg::NormalizedPower;
 
+    auto rotate_power(const double& hstick) -> power_map_msg::msg::NormalizedPower;
+
     auto stop_power() -> power_map_msg::msg::NormalizedPower;
 
 public:

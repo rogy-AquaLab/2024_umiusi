@@ -38,7 +38,7 @@ void app::App::joy_callback(const sensor_msgs::msg::Joy& msg) {
         return;
     }
     if (rstick_h_effective) {
-        // TODO: 水平回転
+        NormalizedPower msg = this->rotate_power(rstick_h);
         return;
     }
     // assert(rstick_v_effective); 自明
@@ -69,6 +69,25 @@ auto app::App::para_move_power(const std::pair<double, double>& stick
     msg.bldc[1] = bldc2;
     msg.bldc[2] = bldc2;
     msg.bldc[3] = bldc1;
+
+    msg.servo[0] = 0.0;
+    msg.servo[1] = 0.0;
+    msg.servo[2] = 0.0;
+    msg.servo[3] = 0.0;
+
+    return msg;
+}
+
+auto app::App::rotate_power(const double& hstick) -> power_map_msg::msg::NormalizedPower {
+    const double mag  = std::abs(hstick);
+    const double sign = std::signbit(hstick) ? -1 : 1;
+
+    NormalizedPower msg{};
+
+    msg.bldc[0] = sign * mag;
+    msg.bldc[1] = -sign * mag;
+    msg.bldc[2] = sign * mag;
+    msg.bldc[3] = -sign * mag;
 
     msg.servo[0] = 0.0;
     msg.servo[1] = 0.0;
