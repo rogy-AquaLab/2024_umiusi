@@ -23,6 +23,8 @@ private:
 
     auto rotate_power(const double& hstick) -> power_map_msg::msg::NormalizedPower;
 
+    auto vertical_move_power(const double& vstick) -> power_map_msg::msg::NormalizedPower;
+
     auto stop_power() -> power_map_msg::msg::NormalizedPower;
 
 public:

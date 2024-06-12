@@ -39,10 +39,11 @@ void app::App::joy_callback(const sensor_msgs::msg::Joy& msg) {
     }
     if (rstick_h_effective) {
         NormalizedPower msg = this->rotate_power(rstick_h);
+        this->power_publisher->publish(msg);
         return;
     }
     // assert(rstick_v_effective); 自明
-    // TODO: 垂直方向の移動
+    this->power_publisher->publish(this->vertical_move_power(rstick_v));
 }
 
 auto app::App::para_move_power(const std::pair<double, double>& stick
@@ -74,6 +75,26 @@ auto app::App::para_move_power(const std::pair<double, double>& stick
     msg.servo[1] = 0.0;
     msg.servo[2] = 0.0;
     msg.servo[3] = 0.0;
+
+    return msg;
+}
+
+auto app::App::vertical_move_power(const double& vstick
+) -> power_map_msg::msg::NormalizedPower {
+    const double mag  = std::abs(vstick);
+    const double sign = std::signbit(vstick) ? -1 : 1;
+
+    power_map_msg::msg::NormalizedPower msg{};
+    // FIXME: tekito- ni kimeta
+    msg.bldc[0] = mag;
+    msg.bldc[1] = mag;
+    msg.bldc[2] = mag;
+    msg.bldc[3] = mag;
+
+    msg.servo[0] = sign;
+    msg.servo[1] = sign;
+    msg.servo[2] = sign;
+    msg.servo[3] = sign;
 
     return msg;
 }
