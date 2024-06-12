@@ -86,6 +86,24 @@ auto power_map::PowerMap::subscription_callback(
     this->publisher->publish(pub_msg);
 }
 
+auto power_map::PowerMap::bldc_placement_param_cb(const rclcpp::Parameter& param
+) -> void {
+    RCLCPP_INFO(this->get_logger(), "received parameter update of bldc_placement");
+    const auto& placement_str = param.as_string_array();
+    for (size_t i = 0; i < 4; ++i) {
+        this->bldc_placement_config[i] = placement_from_str(placement_str[i]).value();
+    }
+}
+
+auto power_map::PowerMap::servo_placement_param_cb(const rclcpp::Parameter& param
+) -> void {
+    RCLCPP_INFO(this->get_logger(), "received parameter update of servo_placement");
+    const auto& placement_str = param.as_string_array();
+    for (size_t i = 0; i < 4; ++i) {
+        this->servo_placement_config[i] = placement_from_str(placement_str[i]).value();
+    }
+}
+
 power_map::PowerMap::PowerMap(const rclcpp::NodeOptions& options) :
     rclcpp::Node("power_map", options) {
     constexpr int DEFAULT_BLDC_CENTER          = 1480;
@@ -146,6 +164,39 @@ power_map::PowerMap::PowerMap(const rclcpp::NodeOptions& options) :
             );
             this->cb_handles[i].servo_max(std::move(cb));
         }
+    }
+    //    this->add_on_set_parameters_callback()
+    {
+        // bldc placement
+        const std::string parameter_name = "bldc_placement";
+        this->declare_parameter(
+            parameter_name,
+            std::vector<std::string>{
+                "left-front", "right-front", "left-back", "right-back" }
+        );
+        this->bldc_placement_param_cb(this->get_parameter(parameter_name));
+        this->bldc_placement_cb_handle = this->param_cb->add_parameter_callback(
+            parameter_name,
+            [this](const rclcpp::Parameter& param) {
+                this->bldc_placement_param_cb(param);
+            }
+        );
+    }
+    {
+        // servo placement
+        const std::string parameter_name = "servo_placement";
+        this->declare_parameter(
+            parameter_name,
+            std::vector<std::string>{
+                "left-front", "right-front", "left-back", "right-back" }
+        );
+        this->servo_placement_param_cb(this->get_parameter(parameter_name));
+        this->servo_placement_cb_handle = this->param_cb->add_parameter_callback(
+            parameter_name,
+            [this](const rclcpp::Parameter& param) {
+                this->servo_placement_param_cb(param);
+            }
+        );
     }
 
     this->publisher = this->create_publisher<packet_interfaces::msg::Power>("power", 10);
