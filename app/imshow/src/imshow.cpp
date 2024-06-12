@@ -13,7 +13,7 @@ void Imshow::image_callback(const sensor_msgs::msg::Image::SharedPtr msg) {
         const cv::Mat& frame = cv_bridge::toCvCopy(msg, "bgr8")->image;
         cv::imshow("Received Image", frame);
         cv::waitKey(1);
-    } catch (cv_bridge::Exception& e) {
+    } catch (const cv_bridge::Exception& e) {
         RCLCPP_ERROR(this->get_logger(), "cv_bridge exception: %s", e.what());
         return;
     }
