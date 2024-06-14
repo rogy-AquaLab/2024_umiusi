@@ -7,6 +7,6 @@ def generate_launch_description():
         Node(
             package="camera_reader", 
             executable="camera_reader", 
-            namespace="device"
+            namespace="device",
             remappings=[("/device/camera/image", "/packet/camera/image")])
     ])
