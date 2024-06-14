@@ -12,7 +12,7 @@ CameraReader::CameraReader() : Node("camera") {
     }
 
     timer_ = this->create_wall_timer(
-        std::chrono::milliseconds(100), std::bind(&CameraReader::timer_callback, this)
+        std::chrono::milliseconds(33), std::bind(&CameraReader::timer_callback, this)
     );
 }
 
