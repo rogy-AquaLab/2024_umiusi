@@ -17,6 +17,6 @@ def generate_launch_description():
             executable="power-map",
             namespace="app",
             parameters=[config],
-            remappings=[("/app/power", "/packet/order/power")]
+            remappings=[("/app/power", "/device/order/power")]
         )
     ])
