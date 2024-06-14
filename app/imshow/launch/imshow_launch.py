@@ -7,7 +7,7 @@ def generate_launch_description():
         Node(
             package="imshow",
             executable="imshow",
-            namespace="app"
+            namespace="app",
             remappings=[("/app/camera/image", "/packet/camera/image")]
         )
     ])
