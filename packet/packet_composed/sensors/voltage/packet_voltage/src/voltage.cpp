@@ -2,7 +2,7 @@
 #include <functional>
 #include <string>
 
-#include "packet_composed/sensorspacket.hpp"
+#include "packet_voltage/voltagepacket.hpp"
 
 void Composed::_loop() {
     std::stringstream ss;
@@ -15,14 +15,14 @@ void Composed::_loop() {
 }
 
 
-Composed::Composed() :
-    rclcpp::Node("composed"),
+Voltage::Voltage() :
+    rclcpp::Node("voltage"),
     _publisher(),
     _timer(),  
     _count(0)  
 {
     using namespace std::chrono_literals;
-    _publisher = this->create_publisher<std_msgs::msg::String>("/sensors_composed", 10);
-    auto loop = std::bind(&Composed::_loop, this);
+    _publisher = this->create_publisher<std_msgs::msg::String>("/voltages_composed", 10);
+    auto loop = std::bind(&Voltage::_loop, this);
     _timer = this->create_wall_timer(500ms, loop);
 }

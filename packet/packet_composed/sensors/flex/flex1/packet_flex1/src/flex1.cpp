@@ -2,9 +2,9 @@
 #include <functional>
 #include <string>
 
-#include "packet_composed/sensorspacket.hpp"
+#include "packet_flex1/flex1spacket.hpp"
 
-void Composed::_loop() {
+void Flex1::_loop() {
     std::stringstream ss;
     ss << "Hello, world! " << _count;
     std_msgs::msg::String msg{};
@@ -15,14 +15,14 @@ void Composed::_loop() {
 }
 
 
-Composed::Composed() :
-    rclcpp::Node("composed"),
+Flex1::Flex1() :
+    rclcpp::Node("Flex1"),
     _publisher(),
     _timer(),  
     _count(0)  
 {
     using namespace std::chrono_literals;
-    _publisher = this->create_publisher<std_msgs::msg::String>("/sensors_composed", 10);
-    auto loop = std::bind(&Composed::_loop, this);
+    _publisher = this->create_publisher<std_msgs::msg::String>("/Flex1_composed", 10);
+    auto loop = std::bind(&Flex1::_loop, this);
     _timer = this->create_wall_timer(500ms, loop);
 }

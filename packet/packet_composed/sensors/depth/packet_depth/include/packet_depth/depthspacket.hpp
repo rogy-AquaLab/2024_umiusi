@@ -1,11 +1,11 @@
-#ifndef PACKET_COMPOSED_SENSORSPACKET_HPP
-#define PACKET_COMPOSED_SENSORSPACKET_HPP
+#ifndef PACKET_DEPTH_DEPTHSPACKET_HPP
+#define PACKET_DEPTH_DEPTHSPACKET_HPP
 
 #include <memory>
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 
-class Composed : public rclcpp::Node {
+class Depth : public rclcpp::Node {
 private:
 
     std::shared_ptr<rclcpp::Publisher<std_msgs::msg::String>> _publisher;
@@ -14,7 +14,7 @@ private:
     void _loop();
 
 public:
-    Composed();
+    Depth();
 };
 
-#endif // PACKET_COMPOSED_SENSORPACKET_HPP
+#endif // PACKET_DEPTH_DEPTHSPACKET_HPP

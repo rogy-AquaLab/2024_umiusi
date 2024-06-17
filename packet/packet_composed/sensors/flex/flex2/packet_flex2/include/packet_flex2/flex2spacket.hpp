@@ -1,11 +1,11 @@
-#ifndef PACKET_COMPOSED_SENSORSPACKET_HPP
-#define PACKET_COMPOSED_SENSORSPACKET_HPP
+#ifndef PACKET_FLEX2_FLEX1SPACKET_HPP
+#define PACKET_FLEX2_FLEX1SPACKET_HPP
 
 #include <memory>
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 
-class Composed : public rclcpp::Node {
+class Flex2 : public rclcpp::Node {
 private:
 
     std::shared_ptr<rclcpp::Publisher<std_msgs::msg::String>> _publisher;
@@ -14,7 +14,7 @@ private:
     void _loop();
 
 public:
-    Composed();
+    Flex2();
 };
 
-#endif // PACKET_COMPOSED_SENSORPACKET_HPP
+#endif // PACKET_FLEX2_FLEX1SPACKET_HPP

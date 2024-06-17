@@ -2,9 +2,9 @@
 #include <functional>
 #include <string>
 
-#include "packet_composed/sensorspacket.hpp"
+#include "packet_quit/quitspacket.hpp"
 
-void Composed::_loop() {
+void Quit::_loop() {
     std::stringstream ss;
     ss << "Hello, world! " << _count;
     std_msgs::msg::String msg{};
@@ -15,14 +15,15 @@ void Composed::_loop() {
 }
 
 
-Composed::Composed() :
-    rclcpp::Node("composed"),
+Quit::Quit() :
+    rclcpp::Node("quit"),
     _publisher(),
     _timer(),  
     _count(0)  
 {
     using namespace std::chrono_literals;
-    _publisher = this->create_publisher<std_msgs::msg::String>("/sensors_composed", 10);
-    auto loop = std::bind(&Composed::_loop, this);
+    _publisher = this->create_publisher<std_msgs::msg::String>("/quitspacket", 10);
+    auto loop = std::bind(&Quit::_loop, this);
     _timer = this->create_wall_timer(500ms, loop);
 }
+
