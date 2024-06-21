@@ -3,21 +3,16 @@
 <package format="3">
   <name>camera_reader</name>
   <version>0.0.0</version>
-  <description>ROS 2 package for receiving images</description>
-  <maintainer email="hiro@todo.todo">hiro</maintainer>
-  <license>MIT License</license>
+  <description>TODO: Package description</description>
+  <maintainer email="yoshikawa.h.ah@m.titech.ac.jp">hiro</maintainer>
+  <license>TODO: License declaration</license>
 
-  <buildtool_depend>ament_cmake</buildtool_depend>
-  <build_depend>rclcpp</build_depend>
-  <build_depend>sensor_msgs</build_depend>
-  <build_depend>cv_bridge</build_depend>
-  <build_depend>image_transport</build_depend>
-  <exec_depend>rclcpp</exec_depend>
-  <exec_depend>sensor_msgs</exec_depend>
-  <exec_depend>cv_bridge</exec_depend>
-  <exec_depend>image_transport</exec_depend>
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
 
   <export>
-    <build_type>ament_cmake</build_type>
+    <build_type>ament_python</build_type>
   </export>
 </package>
