@@ -4,11 +4,12 @@ from sensor_msgs.msg import Image
 import cv2
 from cv_bridge import CvBridge
 
+
 class Camera(Node):
     def __init__(self):
         super().__init__('camera')
-        self.publisher_=self.create_publisher(Image,'camera_image',10)
-        self.timer=self.create_timer(0.1,self.timer_callback)
+        self.publisher_=self.create_publisher(Image, 'camera_image', 10)
+        self.timer=self.create_timer(0.1, self.timer_callback)
         self.cap=cv2.VideoCapture(0)
         self.bridge=CvBridge()
         if not self.cap.isOpened():
@@ -18,7 +19,7 @@ class Camera(Node):
     def timer_callback(self):
         ret,frame=self.cap.read()
         if ret:
-            msg=self.bridge.cv2_to_imgmsg(frame,"bgr8")
+            msg=self.bridge.cv2_to_imgmsg(frame, "bgr8")
             self.publisher_.publish(msg)
         else:
             self.get_logger().error('Failed to capture image')
