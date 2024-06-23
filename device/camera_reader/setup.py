@@ -20,7 +20,7 @@ setup(
     maintainer_email='yoshikawa.h.ah@m.titech.ac.jp',
     description='Camera for ROS2',
     license='MIT license',
-    tests_require=['pytest'],
+    tests_require=[],
     entry_points={
         'console_scripts': [
             'camera=camera_reader.camera:main',
