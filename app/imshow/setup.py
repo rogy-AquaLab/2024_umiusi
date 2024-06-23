@@ -20,7 +20,7 @@ setup(
     maintainer_email='yoshikawa.h.ah@m.titech.ac.jp',
     description='Image display for ROS2',
     license='MIT License',
-    tests_require=['pytest'],
+    tests_require=[],
     entry_points={
         'console_scripts': [
             'imshow = imshow.imshow:main',
