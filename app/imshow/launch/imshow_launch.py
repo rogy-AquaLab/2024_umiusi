@@ -8,6 +8,6 @@ def generate_launch_description():
             package="imshow",
             executable="imshow",
             namespace="app",
-            remappings=[("/app/camera/image", "/packet/camera/image")]
+            remappings=[("/app/camera_image", "/packet/camera_image")]
         )
     ])
