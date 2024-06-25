@@ -106,3 +106,4 @@ void Composed::voltage_topic_callback(const packet_interfaces::msg::Voltage& msg
     // 他のデータも追加する
     composed_publisher->publish(composed_msg);
 }
+
