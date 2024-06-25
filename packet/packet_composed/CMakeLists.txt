@@ -12,6 +12,8 @@ find_package(ament_cmake REQUIRED)
 # find_package(<dependency> REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(packet_interfaces REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
 
  add_executable(Composed
   src/composed_main.cpp
@@ -20,6 +22,8 @@ find_package(packet_interfaces REQUIRED)
 
  ament_target_dependencies(Composed
    rclcpp
+   std_msgs
+   sensor_msgs
    packet_interfaces
  )
 
