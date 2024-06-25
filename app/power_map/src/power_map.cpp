@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <string>
+#include <unordered_set>
 
 #include <rclcpp/parameter.hpp>
 #include <rclcpp/parameter_event_handler.hpp>
@@ -104,6 +105,64 @@ auto power_map::PowerMap::servo_placement_param_cb(const rclcpp::Parameter& para
     }
 }
 
+auto power_map::PowerMap::on_set_parameters_cb(
+    const std::vector<rclcpp::Parameter>& params
+) -> rcl_interfaces::msg::SetParametersResult {
+    using rclcpp::ParameterType;
+
+#define RETURN_RESULT(SUCCESSFUL, REASON)                \
+    do {                                                 \
+        rcl_interfaces::msg::SetParametersResult result; \
+        result.successful = SUCCESSFUL;                  \
+        result.reason     = REASON;                      \
+        return result;                                   \
+    } while (false)
+
+    for (const rclcpp::Parameter& param : params) {
+        const std::string&   name = param.get_name();
+        const ParameterType& type = param.get_type();
+        if (name.find("bldc_center") == 0 || name.find("bldc_positive_radius") == 0
+            || name.find("bldc_negative_radius") == 0 || name.find("servo_min") == 0
+            || name.find("servo_max") == 0)
+        {
+            if (type != ParameterType::PARAMETER_INTEGER) {
+                RETURN_RESULT(false, "invalid type; expected integer");
+            }
+        } else if (name == "servo_placement" || name == "bldc_placement") {
+            if (type != ParameterType::PARAMETER_STRING_ARRAY) {
+                RETURN_RESULT(false, "invalid type; expected array of string");
+            }
+            const std::vector<std::string>& value = param.as_string_array();
+            if (value.size() != 4) {
+                RETURN_RESULT(false, "invalid value; the length of array must be 4");
+            }
+            std::unordered_set<power_map::Placement> seen_placements;
+            for (const std::string& v : value) {
+                const std::optional<power_map::Placement> parsed = placement_from_str(v);
+                if (!parsed.has_value()) {
+                    RETURN_RESULT(
+                        false,
+                        "invalid value; each element of array must be one of left-front, "
+                        "left-back, right-front, right-back"
+                    );
+                }
+                const power_map::Placement placement = parsed.value();
+                if (seen_placements.count(placement) > 0) {
+                    RETURN_RESULT(false, "invalid value; each element must be unique");
+                }
+                seen_placements.insert(placement);
+            }
+        } else {
+            RCLCPP_DEBUG_STREAM(
+                this->get_logger(), "received unexpected parameter " << name << ", skip"
+            );
+        }
+    }
+    RETURN_RESULT(true, "");
+
+#undef RETURN_RESULT
+}
+
 power_map::PowerMap::PowerMap(const rclcpp::NodeOptions& options) :
     rclcpp::Node("power_map", options) {
     constexpr int DEFAULT_BLDC_CENTER          = 1480;
@@ -165,7 +224,6 @@ power_map::PowerMap::PowerMap(const rclcpp::NodeOptions& options) :
             this->cb_handles[i].servo_max(std::move(cb));
         }
     }
-    //    this->add_on_set_parameters_callback()
     {
         // bldc placement
         const std::string parameter_name = "bldc_placement";
@@ -198,6 +256,11 @@ power_map::PowerMap::PowerMap(const rclcpp::NodeOptions& options) :
             }
         );
     }
+    this->on_set_parameters_cb_handle = this->add_on_set_parameters_callback(
+        [this](const std::vector<rclcpp::Parameter>& params) {
+            return this->on_set_parameters_cb(params);
+        }
+    );
 
     this->publisher = this->create_publisher<packet_interfaces::msg::Power>("power", 10);
     this->subscription = this->create_subscription<power_map_msg::msg::NormalizedPower>(

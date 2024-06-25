@@ -35,6 +35,9 @@ private:
     std::shared_ptr<rclcpp::ParameterCallbackHandle> bldc_placement_cb_handle;
     std::shared_ptr<rclcpp::ParameterCallbackHandle> servo_placement_cb_handle;
 
+    rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr
+        on_set_parameters_cb_handle;
+
     rclcpp::Publisher<packet_interfaces::msg::Power>::SharedPtr publisher;
 
     rclcpp::Subscription<power_map_msg::msg::NormalizedPower>::SharedPtr subscription;
@@ -57,6 +60,9 @@ private:
     auto bldc_placement_param_cb(const rclcpp::Parameter& param) -> void;
 
     auto servo_placement_param_cb(const rclcpp::Parameter& param) -> void;
+
+    auto on_set_parameters_cb(const std::vector<rclcpp::Parameter>& params
+    ) -> rcl_interfaces::msg::SetParametersResult;
 
     auto subscription_callback(const power_map_msg::msg::NormalizedPower& msg) -> void;
 
