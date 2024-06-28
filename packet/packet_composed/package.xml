@@ -12,12 +12,6 @@
   <depend>sensor_msgs</depend>
   <depend>packet_interfaces</depend>
   <depend>packet_interfaces</depend>
-
-  <exec_depend>rclcpp</exec_depend>
-  <exec_depend>std_msgs</exec_depend>
-  <exec_depend>sensor_msgs</exec_depend>
-  <exec_depend>packet_interfaces</exec_depend>
-
   <export>
     <build_type>ament_cmake</build_type>
   </export>

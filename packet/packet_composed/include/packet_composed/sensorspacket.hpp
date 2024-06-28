@@ -7,15 +7,13 @@
 
 class Composed : public rclcpp::Node {
 private:
-    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr _publisher;
     rclcpp::Publisher<packet_interfaces::msg::Composed>::SharedPtr composed_publisher;
-
     rclcpp::Subscription<packet_interfaces::msg::Depth>::SharedPtr depth_subscription;
     rclcpp::Subscription<sensor_msgs::msg::Imu>::SharedPtr         imu_subscription;
     rclcpp::Subscription<packet_interfaces::msg::Flex>::SharedPtr  flex1_subscription;
     rclcpp::Subscription<packet_interfaces::msg::Flex>::SharedPtr  flex2_subscription;
-    rclcpp::Subscription<packet_interfaces::msg::current>::SharedPtr  current_subscription;
-    rclcpp::Subscription<packet_interfaces::msg::voltage>::SharedPtr  voltage_subscription;
+    rclcpp::Subscription<packet_interfaces::msg::Current>::SharedPtr  current_subscription;
+    rclcpp::Subscription<packet_interfaces::msg::Voltage>::SharedPtr  voltage_subscription;
 
     //まとめてpublishするためにタイマーのつもり
     rclcpp::TimerBase::SharedPtr _timer;

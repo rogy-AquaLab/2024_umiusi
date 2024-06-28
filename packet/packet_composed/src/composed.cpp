@@ -12,26 +12,25 @@ Composed::Composed() :
 {
     //composed_publisherをコンストラクタで初期化した。
     using namespace std::chrono_literals;
-    _publisher = this->create_publisher<std_msgs::msg::String>("/sensors_composed", 10);
     composed_publisher = this->create_publisher<packet_interfaces::msg::Composed>("composed_topic", 10);
 
     depth_subscription = this->create_subscription<packet_interfaces::msg::Depth>(
-        "depth_topic", 10, std::bind(&Composed::depth_topic_callback, this, std::placeholders::_1));
+        "sensors_depth", 10, std::bind(&Composed::depth_topic_callback, this, std::placeholders::_1));
 
     imu_subscription = this->create_subscription<sensor_msgs::msg::Imu>(
-        "imu_topic", 10, std::bind(&Composed::imu_topic_callback, this, std::placeholders::_1));
+        "sensors_imu", 10, std::bind(&Composed::imu_topic_callback, this, std::placeholders::_1));
 
     flex1_subscription = this->create_subscription<packet_interfaces::msg::Flex>(
-        "flex1_topic", 10, std::bind(&Composed::flex1_topic_callback, this, std::placeholders::_1));
+        "sensors_flex1", 10, std::bind(&Composed::flex1_topic_callback, this, std::placeholders::_1));
 
     flex2_subscription = this->create_subscription<packet_interfaces::msg::Flex>(
-        "flex2_topic", 10, std::bind(&Composed::flex2_topic_callback, this, std::placeholders::_1));
+        "sensors_flex2", 10, std::bind(&Composed::flex2_topic_callback, this, std::placeholders::_1));
 
     current_subscription = this->create_subscription<packet_interfaces::msg::Current>(
-        "current_topic", 10, std::bind(&Composed::current_topic_callback, this, std::placeholders::_1));
+        "sensors_current", 10, std::bind(&Composed::current_topic_callback, this, std::placeholders::_1));
 
     voltage_subscription = this->create_subscription<packet_interfaces::msg::Voltage>(
-        "voltage_topic", 10, std::bind(&Composed::voltage_topic_callback, this, std::placeholders::_1));
+        "sensors_voltage", 10, std::bind(&Composed::voltage_topic_callback, this, std::placeholders::_1));
    
     auto loop = std::bind(&Composed::_loop, this);
     _timer = this->create_wall_timer(500ms, loop);
@@ -49,7 +48,7 @@ void Composed::_loop() {
 
 void Composed::depth_topic_callback(const packet_interfaces::msg::Depth& msg)
 {
-    RCLCPP_INFO(this->get_logger(), "Received Depth message");
+    RCLCPP_DEBUG(this->get_logger(), "Received Depth message");
     // Composedメッセージにデータを追加
     auto composed_msg = packet_interfaces::msg::Composed();
     composed_msg.depth = msg;
@@ -59,7 +58,7 @@ void Composed::depth_topic_callback(const packet_interfaces::msg::Depth& msg)
 
 void Composed::imu_topic_callback(const sensor_msgs::msg::Imu& msg)
 {
-    RCLCPP_INFO(this->get_logger(), "Received IMU message");
+    RCLCPP_DEBUG(this->get_logger(), "Received IMU message");
     // Composedメッセージにデータを追加
     auto composed_msg = packet_interfaces::msg::Composed();
     composed_msg.imu = msg;
@@ -69,7 +68,7 @@ void Composed::imu_topic_callback(const sensor_msgs::msg::Imu& msg)
 
 void Composed::flex1_topic_callback(const packet_interfaces::msg::Flex1& msg)
 {
-    RCLCPP_INFO(this->get_logger(), "Received Flex1 message");
+    RCLCPP_DEBUG(this->get_logger(), "Received Flex1 message");
     // Composedメッセージにデータを追加
     auto composed_msg = packet_interfaces::msg::Composed();
     composed_msg.flex1 = msg;
@@ -79,7 +78,7 @@ void Composed::flex1_topic_callback(const packet_interfaces::msg::Flex1& msg)
 
 void Composed::flex2_topic_callback(const packet_interfaces::msg::Flex2& msg)
 {
-    RCLCPP_INFO(this->get_logger(), "Received Flex2 message");
+    RCLCPP_DEBUG(this->get_logger(), "Received Flex2 message");
     // Composedメッセージにデータを追加
     auto composed_msg = packet_interfaces::msg::Composed();
     composed_msg.flex2 = msg;
@@ -89,7 +88,7 @@ void Composed::flex2_topic_callback(const packet_interfaces::msg::Flex2& msg)
 
 void Composed::current_topic_callback(const packet_interfaces::msg::Current2& msg)
 {
-    RCLCPP_INFO(this->get_logger(), "Received Current message");
+    RCLCPP_DEBUG(this->get_logger(), "Received Current message");
     // Composedメッセージにデータを追加
     auto composed_msg = packet_interfaces::msg::Composed();
     composed_msg.Current = msg;
@@ -99,7 +98,7 @@ void Composed::current_topic_callback(const packet_interfaces::msg::Current2& ms
 
 void Composed::voltage_topic_callback(const packet_interfaces::msg::Voltage& msg)
 {
-    RCLCPP_INFO(this->get_logger(), "Received Flex2 message");
+    RCLCPP_DEBUG(this->get_logger(), "Received Flex2 message");
     // Composedメッセージにデータを追加
     auto composed_msg = packet_interfaces::msg::Composed();
     composed_msg.voltage = msg;
