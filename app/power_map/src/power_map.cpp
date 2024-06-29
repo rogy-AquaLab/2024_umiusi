@@ -69,19 +69,30 @@ auto power_map::PowerMap::subscription_callback(
     const power_map_msg::msg::NormalizedPower& msg
 ) -> void {
     RCLCPP_DEBUG(this->get_logger(), "received normalized power");
+
+    std::array<size_t, 4> bldc_placement_map{}, servo_placement_map{};
+    for (size_t i = 0; i < 4; ++i) {
+        bldc_placement_map[static_cast<size_t>(this->bldc_placement_config[i])]   = i;
+        servo_placement_map[static_cast<size_t>(this->servo_placement_config[i])] = i;
+    }
+
     packet_interfaces::msg::Power pub_msg{};
     for (size_t i = 0; i < 4; ++i) {
+        const size_t bldc_index  = bldc_placement_map[i];
+        const size_t servo_index = servo_placement_map[i];
         // FIXME: formatが
-        const auto& config      = this->configs[i];
-        const float bldc_radius = msg.bldc[i] < 0 ? config.bldc_negative_radius()
-                                                  : config.bldc_positive_radius();
-        pub_msg.bldc[i]         = static_cast<std::uint16_t>(
-            config.bldc_center() + static_cast<int>(msg.bldc[i] * bldc_radius)
+        const auto& bldc_config  = this->configs[bldc_index];
+        const auto& servo_config = this->configs[servo_index];
+        const float bldc_radius  = msg.bldc[i] < 0 ? bldc_config.bldc_negative_radius()
+                                                   : bldc_config.bldc_positive_radius();
+        pub_msg.bldc[bldc_index] = static_cast<std::uint16_t>(
+            bldc_config.bldc_center() + static_cast<int>(msg.bldc[i] * bldc_radius)
         );
         const float servo_range
-            = static_cast<float>(config.servo_max() - config.servo_min());
-        pub_msg.servo[i] = static_cast<std::uint16_t>(
-            config.servo_min() + static_cast<int>((msg.servo[i] + 1) / 2.0 * servo_range)
+            = static_cast<float>(servo_config.servo_max() - servo_config.servo_min());
+        pub_msg.servo[servo_index] = static_cast<std::uint16_t>(
+            servo_config.servo_min()
+            + static_cast<int>((msg.servo[i] + 1) / 2.0 * servo_range)
         );
     }
     this->publisher->publish(pub_msg);
