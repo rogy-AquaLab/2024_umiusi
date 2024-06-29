@@ -4,7 +4,7 @@
 import sys
 
 import rclpy
-from rclpy.executors import MultiThreadedExecutor, ExternalShutdownException
+from rclpy.executors import ExternalShutdownException, MultiThreadedExecutor
 
 from .mutex_serial import MutexSerial
 from .receiver import Receiver

@@ -6,6 +6,6 @@ def generate_launch_description() -> LaunchDescription:
     main = Node(
         package="nucleo_communicate_py",
         executable="channel",
-        namespace="device"
+        namespace="device",
     )
     return LaunchDescription([main])

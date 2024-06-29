@@ -6,6 +6,6 @@ def generate_launch_description() -> LaunchDescription:
     receiver = Node(
         package="nucleo_communicate_py",
         executable="receiver",
-        namespace="device"
+        namespace="device",
     )
     return LaunchDescription([receiver])

@@ -1,0 +1,23 @@
+line-length = 90
+indent-width = 4
+target-version = "py310"
+
+[lint]
+# https://docs.astral.sh/ruff/rules/
+# F: Pyflakes
+# E, W: pycodestyle
+# I: isort
+# A: flake8-builtins
+# COM: flake8-commas
+# SLF, flake8-self
+# SIM: flake8-simplify
+# RUF: Ruff-specific rules
+select = ["F", "E", "W", "I", "A", "COM", "SLF", "SIM", "RUF"]
+ignore = []
+
+fixable = ["ALL"]
+
+[format]
+quote-style = "double"
+indent-style = "space"
+

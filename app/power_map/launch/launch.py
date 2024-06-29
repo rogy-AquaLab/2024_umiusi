@@ -9,14 +9,16 @@ def generate_launch_description():
     config = os.path.join(
         get_package_share_directory("power_map"),
         "config",
-        "default_param.yml"
+        "default_param.yml",
     )
-    return LaunchDescription([
-        Node(
-            package="power_map",
-            executable="power-map",
-            namespace="app",
-            parameters=[config],
-            remappings=[("/app/power", "/device/order/power")]
-        )
-    ])
+    return LaunchDescription(
+        [
+            Node(
+                package="power_map",
+                executable="power-map",
+                namespace="app",
+                parameters=[config],
+                remappings=[("/app/power", "/device/order/power")],
+            ),
+        ],
+    )

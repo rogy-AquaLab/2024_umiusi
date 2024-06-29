@@ -3,6 +3,8 @@ from launch_ros.actions import Node
 
 
 def generate_launch_description():
-    return LaunchDescription([
-        Node(package="joystick", executable="joystick", namespace="device")
-    ])
+    return LaunchDescription(
+        [
+            Node(package="joystick", executable="joystick", namespace="device"),
+        ],
+    )
