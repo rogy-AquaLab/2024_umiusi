@@ -4,7 +4,7 @@
 import sys
 
 import rclpy
-from packet_interfaces.msg import Current, Flex, Voltage, Power
+from packet_interfaces.msg import Current, Flex, Power, Voltage
 from rclpy.node import Node
 from std_msgs.msg import Empty
 
@@ -21,13 +21,13 @@ class Channel(Node):
             Empty,
             "quit",
             self._quit_callback,
-            10
+            10,
         )
         self._order_subscription = self.create_subscription(
             Power,
             "order/power",
             self._order_callback,
-            10
+            10,
         )
         self._sender = Sndr(mutex_serial)
         # Receiver.__init__
@@ -43,8 +43,12 @@ class Channel(Node):
     def _recv_callback(self):
         self.get_logger().debug("tick")
         flex1, flex2, current, voltage = self._recv.receive_raw()
-        self.get_logger().info(f"received from nucleo: {flex1=}, {flex2=}, {current=}, {voltage=}")
-        flex1, flex2, current, voltage = self._recv.map_values(flex1, flex2, current, voltage)
+        self.get_logger().info(
+            f"received from nucleo: {flex1=}, {flex2=}, {current=}, {voltage=}",
+        )
+        flex1, flex2, current, voltage = self._recv.map_values(
+            flex1, flex2, current, voltage,
+        )
         self._flex1_publisher.publish(Flex(value=flex1))
         self._flex2_publisher.publish(Flex(value=flex2))
         # TODO: データのマッピングはnucleo側と相談

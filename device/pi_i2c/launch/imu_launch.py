@@ -6,6 +6,6 @@ def generate_launch_description() -> LaunchDescription:
     imu = Node(
         package="pi_i2c",
         executable="imu",
-        namespace="device"
+        namespace="device",
     )
     return LaunchDescription([imu])

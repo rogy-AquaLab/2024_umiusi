@@ -29,7 +29,11 @@ class Recv:
         return (flex1, flex2, current, voltage)
 
     def map_values(
-            self, flex1: int, flex2: int, current: int, voltage: int
+        self,
+        flex1: int,
+        flex2: int,
+        current: int,
+        voltage: int,
     ) -> tuple[int, int, float, float]:
         # TODO: current, voltageの計算はnucleo側と要相談
         return (flex1, flex2, current / 0xFFFF, voltage / 0xFFFF)
@@ -53,8 +57,12 @@ class Receiver(Node):
     def _timer_callback(self) -> None:
         self.get_logger().debug("tick")
         flex1, flex2, current, voltage = self._recv.receive_raw()
-        self.get_logger().info(f"received from nucleo: {flex1=}, {flex2=}, {current=}, {voltage=}")
-        flex1, flex2, current, voltage = self._recv.map_values(flex1, flex2, current, voltage)
+        self.get_logger().info(
+            f"received from nucleo: {flex1=}, {flex2=}, {current=}, {voltage=}",
+        )
+        flex1, flex2, current, voltage = self._recv.map_values(
+            flex1, flex2, current, voltage,
+        )
         self._flex1_publisher.publish(Flex(value=flex1))
         self._flex2_publisher.publish(Flex(value=flex2))
         # TODO: データのマッピングはnucleo側と相談
