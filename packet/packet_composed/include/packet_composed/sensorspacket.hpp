@@ -27,7 +27,22 @@ private:
     void flex2_topic_callback(const packet_interfaces::msg::Flex2& msg);
     void current_topic_callback(const packet_interfaces::msg::current& msg);
     void voltage_topic_callback(const packet_interfaces::msg::voltage& msg);
- 
+
+    packet_interfaces::msg::Depth _depth;
+    sensor_msgs::msg::Imu _imu;
+    packet_interfaces::msg::Flex _flex1;
+    packet_interfaces::msg::Flex _flex2;
+    packet_interfaces::msg::Current _current;
+    packet_interfaces::msg::Voltage _voltage;
+
+    bool _depth_received;
+    bool _imu_received;
+    bool _flex1_received;
+    bool _flex2_received;
+    bool _current_received;
+    bool _voltage_received;
+    //ブール関数をつかって、で受信したら初期化させるようにする？
+
 
     // さらにいくつかのメソッド, プロパティが必要になる
 
