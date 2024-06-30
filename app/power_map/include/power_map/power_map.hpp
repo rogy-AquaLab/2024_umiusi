@@ -2,8 +2,9 @@
 #define POWER_MAP_HPP
 
 #include <array>
-
 #include <memory>
+#include <utility>
+
 #include <rclcpp/node.hpp>
 #include <rclcpp/node_options.hpp>
 #include <rclcpp/parameter_event_handler.hpp>
@@ -14,6 +15,7 @@
 #include "power_map_msg/msg/normalized_power.hpp"
 
 #include "power_map/container.hpp"
+#include "power_map/placement.hpp"
 
 namespace power_map {
 
@@ -26,6 +28,15 @@ private:
 
     std::array<Config, 4>    configs;
     std::array<CbHandles, 4> cb_handles;
+
+    std::array<Placement, 4> bldc_placement_config;
+    std::array<Placement, 4> servo_placement_config;
+
+    std::shared_ptr<rclcpp::ParameterCallbackHandle> bldc_placement_cb_handle;
+    std::shared_ptr<rclcpp::ParameterCallbackHandle> servo_placement_cb_handle;
+
+    rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr
+        on_set_parameters_cb_handle;
 
     rclcpp::Publisher<packet_interfaces::msg::Power>::SharedPtr publisher;
 
@@ -45,6 +56,13 @@ private:
 
     auto create_servo_max_cb(size_t i
     ) -> rclcpp::ParameterCallbackHandle::ParameterCallbackType;
+
+    auto bldc_placement_param_cb(const rclcpp::Parameter& param) -> void;
+
+    auto servo_placement_param_cb(const rclcpp::Parameter& param) -> void;
+
+    auto on_set_parameters_cb(const std::vector<rclcpp::Parameter>& params
+    ) -> rcl_interfaces::msg::SetParametersResult;
 
     auto subscription_callback(const power_map_msg::msg::NormalizedPower& msg) -> void;
 

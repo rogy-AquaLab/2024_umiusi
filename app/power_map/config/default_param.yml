@@ -24,3 +24,6 @@
     bldc_positive_radius4: 250
     servo_max4: 2400
     servo_min4: 500
+    # placement
+    bldc_placement: [ "left-front", "right-front", "left-back", "right-back" ]
+    servo_placement: [ "left-front", "right-front", "left-back", "right-back" ]
