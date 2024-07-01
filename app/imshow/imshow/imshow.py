@@ -9,7 +9,10 @@ class Imshow(Node):
     def __init__(self):
         super().__init__("imshow")
         self.subscription = self.create_subscription(
-            Image, "camera_image", self.listener_callback, 10,
+            Image,
+            "camera_image",
+            self.listener_callback,
+            10,
         )
         self.bridge = CvBridge()
 
