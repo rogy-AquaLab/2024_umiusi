@@ -15,7 +15,6 @@ private:
     rclcpp::Subscription<packet_interfaces::msg::Current>::SharedPtr  current_subscription;
     rclcpp::Subscription<packet_interfaces::msg::Voltage>::SharedPtr  voltage_subscription;
 
-    //まとめてpublishするためにタイマーのつもり
     rclcpp::TimerBase::SharedPtr _timer;
     size_t _count;
     packet_interfaces::msg::Composed composed_msg;
@@ -41,10 +40,6 @@ private:
     bool _flex2_received;
     bool _current_received;
     bool _voltage_received;
-    //ブール関数をつかって、で受信したら初期化させるようにする？
-
-
-    // さらにいくつかのメソッド, プロパティが必要になる
 
 public:
     Composed();
