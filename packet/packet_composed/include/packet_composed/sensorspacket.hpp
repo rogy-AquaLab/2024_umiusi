@@ -16,7 +16,6 @@ private:
     rclcpp::Subscription<packet_interfaces::msg::Voltage>::SharedPtr  voltage_subscription;
 
     rclcpp::TimerBase::SharedPtr _timer;
-    size_t _count;
     packet_interfaces::msg::Composed composed_msg;
 
     void _loop();
