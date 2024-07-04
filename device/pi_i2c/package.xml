@@ -9,6 +9,7 @@
 
   <exec_depend>rclpy</exec_depend>
   <exec_depend>std_msgs</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>
   <exec_depend>packet_interfaces</exec_depend>
   <exec_depend>rpi_bno055</exec_depend>
