@@ -6,6 +6,8 @@ from rclpy.node import Node
 from rpi_bno055 import BNO055
 from sensor_msgs.msg import Imu as ImuMsg
 
+from .utils import encode_quat, encode_vec3
+
 
 class Imu(Node):
     def __init__(self, bus: smbus2.SMBus | None = None) -> None:
@@ -39,6 +41,9 @@ class Imu(Node):
             # TODO: covariance の計算
             msg = ImuMsg()
             msg.header.frame_id = "bno055"
+            msg.orientation = encode_quat(quaternion)
+            msg.angular_velocity = encode_vec3(angular_velocity)
+            msg.linear_acceleration = encode_vec3(linear_accel)
         except OSError:
             self.get_logger().error("Failed to read data from IMU")
 
