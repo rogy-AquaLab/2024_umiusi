@@ -7,5 +7,11 @@ def generate_launch_description() -> LaunchDescription:
         package="nucleo_communicate_py",
         executable="sender",
         namespace="device",
+        remappings=[
+            ("/device/sender_launch", "/packet/order/quit")(
+                "/device/sender_launch",
+                "/packet/order/power",
+            ),
+        ],
     )
     return LaunchDescription([sender])

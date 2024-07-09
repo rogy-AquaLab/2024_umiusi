@@ -9,7 +9,7 @@ def generate_launch_description():
                 package="camera_reader",
                 executable="camera_reader",
                 namespace="device",
-                remappings=[("/device/camera/image", "/packet/camera/image")],
+                remappings=[("/device/camera_image", "/packet/camera_image")],
             ),
         ],
     )

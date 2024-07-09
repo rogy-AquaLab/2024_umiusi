@@ -47,7 +47,10 @@ class Channel(Node):
             f"received from nucleo: {flex1=}, {flex2=}, {current=}, {voltage=}",
         )
         flex1, flex2, current, voltage = self._recv.map_values(
-            flex1, flex2, current, voltage,
+            flex1,
+            flex2,
+            current,
+            voltage,
         )
         self._flex1_publisher.publish(Flex(value=flex1))
         self._flex2_publisher.publish(Flex(value=flex2))
