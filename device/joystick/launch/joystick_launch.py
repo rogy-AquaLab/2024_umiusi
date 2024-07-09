@@ -11,5 +11,5 @@ def generate_launch_description():
                 namespace="device",
                 remappings=[("/device/joystick", "/packet/joystick")],
             ),
-        ]
+        ],
     )

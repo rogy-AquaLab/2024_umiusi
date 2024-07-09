@@ -11,5 +11,5 @@ def generate_launch_description():
                 namespace="device",
                 remappings=[("/device/camera_image", "/packet/camera_image")],
             ),
-        ]
+        ],
     )
