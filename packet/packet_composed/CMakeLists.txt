@@ -26,6 +26,8 @@ find_package(sensor_msgs REQUIRED)
    sensor_msgs
    packet_interfaces
  )
+ 
+ set_property(TARGET Composed PROPERTY CXX_STANDARD 17)
 
  target_include_directories(Composed
    PUBLIC
