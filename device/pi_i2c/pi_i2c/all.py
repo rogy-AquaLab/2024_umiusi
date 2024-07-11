@@ -2,6 +2,7 @@ import sys
 
 import rclpy
 from rclpy.executors import ExternalShutdownException, MultiThreadedExecutor
+from smbus2 import SMBus
 
 from .depth import Depth
 from .imu import Imu
@@ -10,8 +11,10 @@ from .imu import Imu
 def main(args=sys.argv):
     rclpy.init(args=args)
     try:
+        # TODO: use argument
+        bus = SMBus("/dev/i2c-1")
         depth = Depth()
-        imu = Imu()
+        imu = Imu(bus)
 
         executor = MultiThreadedExecutor()
         executor.add_node(depth)

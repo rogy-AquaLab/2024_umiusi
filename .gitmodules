@@ -1,0 +1,4 @@
+[submodule "device/rpi-bno055"]
+	path = device/rpi-bno055
+	url = https://github.com/H1rono/rpi-bno055
+	branch = ros2
