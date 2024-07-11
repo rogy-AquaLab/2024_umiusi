@@ -16,7 +16,12 @@ class Imu(Node):
         super().__init__("imu")
         self._bno055 = BNO055(bus=bus)
         self._imu_publisher = self.create_publisher(ImuMsg, "imu", 10)
-        self._reset_subscription = self.create_subscription(Empty, "imu/reset", self._reset_callback, 10)
+        self._reset_subscription = self.create_subscription(
+            Empty,
+            "imu/reset",
+            self._reset_callback,
+            10,
+        )
         self._timer = self.create_timer(0.5, self._timer_callback)
         self._bno055_lock = Lock()
 
