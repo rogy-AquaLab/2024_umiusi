@@ -7,5 +7,6 @@ def generate_launch_description() -> LaunchDescription:
         package="pi_i2c",
         executable="all",
         namespace="device",
+        remappings=[("/device/imu", "/packet/sensors/imu")],
     )
     return LaunchDescription([all_exec])
