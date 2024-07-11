@@ -13,11 +13,10 @@ target-version = "py310"
 # SIM: flake8-simplify
 # RUF: Ruff-specific rules
 select = ["F", "E", "W", "I", "A", "COM", "SLF", "SIM", "RUF"]
-ignore = []
+ignore = ["COM812"]
 
 fixable = ["ALL"]
 
 [format]
 quote-style = "double"
 indent-style = "space"
-
