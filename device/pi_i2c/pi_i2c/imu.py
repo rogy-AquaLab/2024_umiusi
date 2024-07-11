@@ -13,7 +13,7 @@ class Imu(Node):
     def __init__(self, bus: smbus2.SMBus | None = None) -> None:
         super().__init__("imu")
         self._bno055 = BNO055(bus=bus)
-        self._publisher = self.create_publisher(ImuMsg, "imu", 10)
+        self._imu_publisher = self.create_publisher(ImuMsg, "imu", 10)
         self._timer = self.create_timer(0.5, self._timer_callback)
 
         # https://github.com/H1rono/rpi-bno055/blob/c6516b1920a9d31582977eb1c31f03e68bcf6a5e/rpi_bno055/scripts.py#L115-L128
@@ -44,6 +44,7 @@ class Imu(Node):
             msg.orientation = encode_quat(quaternion)
             msg.angular_velocity = encode_vec3(angular_velocity)
             msg.linear_acceleration = encode_vec3(linear_accel)
+            self._imu_publisher.publish(msg)
         except OSError:
             self.get_logger().error("Failed to read data from IMU")
 
