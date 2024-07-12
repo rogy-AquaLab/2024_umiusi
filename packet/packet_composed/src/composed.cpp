@@ -32,11 +32,17 @@ Composed::Composed() :
         "sensors/imu", 10, std::bind(&Composed::imu_topic_callback, this, std::placeholders::_1));
 
     flex1_subscription = this->create_subscription<packet_interfaces::msg::Flex>(
-        "sensors/flex/1", 10, std::bind(&Composed::flex1_topic_callback, this, std::placeholders::_1));
+        "sensors/flex_1",
+        10,
+        std::bind(&Composed::flex1_topic_callback, this, std::placeholders::_1)
+    );
 
     flex2_subscription = this->create_subscription<packet_interfaces::msg::Flex>(
-        "sensors/flex/2", 10, std::bind(&Composed::flex2_topic_callback, this, std::placeholders::_1));
-    
+        "sensors/flex_2",
+        10,
+        std::bind(&Composed::flex2_topic_callback, this, std::placeholders::_1)
+    );
+
     current_subscription = this->create_subscription<packet_interfaces::msg::Current>(
         "sensors/current", 10, std::bind(&Composed::current_topic_callback, this, std::placeholders::_1));
 
