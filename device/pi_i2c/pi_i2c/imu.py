@@ -6,7 +6,7 @@ import smbus2
 from rclpy.node import Node
 from rpi_bno055 import BNO055
 from sensor_msgs.msg import Imu as ImuMsg
-from std_msgs.msg import Empty
+from std_msgs.msg import Empty, Header
 
 from .utils import encode_quat, encode_vec3
 
@@ -28,6 +28,13 @@ class Imu(Node):
         # https://github.com/H1rono/rpi-bno055/blob/c6516b1920a9d31582977eb1c31f03e68bcf6a5e/rpi_bno055/scripts.py#L115-L128
         self._bno055.begin()
         self._reset_bno055()
+
+    def _generate_header(self) -> Header:
+        from builtin_interfaces.msg import Time
+
+        now = self.get_clock().now().to_msg()
+        assert isinstance(now, Time)
+        return Header(frame_id="imu", stamp=now)
 
     def _reset_bno055(self) -> None:
         with self._bno055_lock:
@@ -57,8 +64,7 @@ class Imu(Node):
                 angular_velocity = self._bno055.read_gyroscope()
                 self.get_logger().info(f"gravity: {gravity}")
                 # TODO: covariance の計算
-                msg = ImuMsg()
-                msg.header.frame_id = "bno055"
+                msg = ImuMsg(header=self._generate_header())
                 msg.orientation = encode_quat(quaternion)
                 msg.angular_velocity = encode_vec3(angular_velocity)
                 msg.linear_acceleration = encode_vec3(linear_accel)
