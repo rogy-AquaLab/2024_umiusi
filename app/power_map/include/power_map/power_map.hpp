@@ -3,6 +3,7 @@
 
 #include <array>
 #include <memory>
+#include <packet_interfaces/msg/detail/power__struct.hpp>
 #include <utility>
 
 #include <rclcpp/node.hpp>
@@ -41,6 +42,8 @@ private:
     rclcpp::Publisher<packet_interfaces::msg::Power>::SharedPtr publisher;
 
     rclcpp::Subscription<power_map_msg::msg::NormalizedPower>::SharedPtr subscription;
+
+    void publish_order(packet_interfaces::msg::Power& msg);
 
     auto create_bldc_center_cb(size_t i
     ) -> rclcpp::ParameterCallbackHandle::ParameterCallbackType;
