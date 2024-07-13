@@ -4,6 +4,7 @@ import pygame
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Joy
+from std_msgs.msg import Header
 
 
 class Joystick(Node):
@@ -17,6 +18,13 @@ class Joystick(Node):
         name = self._joystick.get_name()
         self.get_logger().info(f"Using controller: {name}")
 
+    def _generate_header(self) -> Header:
+        from builtin_interfaces.msg import Time
+
+        now = self.get_clock().now().to_msg()
+        assert isinstance(now, Time)
+        return Header(frame_id="joystick", stamp=now)
+
     def _timer_callback(self):
         self.get_logger().debug("tick")
         pygame.event.pump()
@@ -27,7 +35,7 @@ class Joystick(Node):
 
         axes = [self._joystick.get_axis(i) for i in range(numaxes)]
         buttons = [int(self._joystick.get_button(i)) for i in range(numbuttons)]
-        msg = Joy(axes=axes, buttons=buttons)
+        msg = Joy(axes=axes, buttons=buttons, header=self._generate_header())
         self._joy_publisher.publish(msg)
 
 

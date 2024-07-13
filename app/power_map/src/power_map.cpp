@@ -11,6 +11,12 @@
 #include <packet_interfaces/msg/power.hpp>
 #include <power_map_msg/msg/normalized_power.hpp>
 
+void power_map::PowerMap::publish_order(packet_interfaces::msg::Power& msg) {
+    msg.header.frame_id = "power_map";
+    msg.header.stamp    = this->get_clock()->now();
+    this->publisher->publish(msg);
+}
+
 // FIXME: create_***_cbのコピペを辞めたい
 auto power_map::PowerMap::create_bldc_center_cb(size_t i
 ) -> rclcpp::ParameterCallbackHandle::ParameterCallbackType {
@@ -95,7 +101,7 @@ auto power_map::PowerMap::subscription_callback(
             + static_cast<int>((msg.servo[i] + 1) / 2.0 * servo_range)
         );
     }
-    this->publisher->publish(pub_msg);
+    this->publish_order(pub_msg);
 }
 
 auto power_map::PowerMap::bldc_placement_param_cb(const rclcpp::Parameter& param

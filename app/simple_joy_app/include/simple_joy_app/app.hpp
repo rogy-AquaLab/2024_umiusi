@@ -5,6 +5,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/joy.hpp>
+#include <std_msgs/msg/header.hpp>
 
 #include <power_map_msg/msg/normalized_power.hpp>
 
@@ -15,6 +16,9 @@ private:
     rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr subscription;
 
     rclcpp::Publisher<power_map_msg::msg::NormalizedPower>::SharedPtr power_publisher;
+
+    // headerを修飾してpublish
+    void publish_power(power_map_msg::msg::NormalizedPower& msg);
 
     void joy_callback(const sensor_msgs::msg::Joy& msg);
 
