@@ -6,7 +6,7 @@ import sys
 import rclpy
 from packet_interfaces.msg import Current, Flex, Power, Voltage
 from rclpy.node import Node
-from std_msgs.msg import Empty
+from std_msgs.msg import Empty, Header
 
 from .mutex_serial import MutexSerial
 from .receiver import Recv
@@ -39,6 +39,13 @@ class Channel(Node):
         self._timer = self.create_timer(0.5, self._recv_callback)
         self._recv = Recv(mutex_serial)
 
+    def _generate_header(self, frame_id: str = "receiver") -> Header:
+        from builtin_interfaces.msg import Time
+
+        now = self.get_clock().now().to_msg()
+        assert isinstance(now, Time)
+        return Header(frame_id=frame_id, stamp=now)
+
     # Receiver implementation
     def _recv_callback(self):
         self.get_logger().debug("tick")
@@ -52,11 +59,19 @@ class Channel(Node):
             current,
             voltage,
         )
-        self._flex1_publisher.publish(Flex(value=flex1))
-        self._flex2_publisher.publish(Flex(value=flex2))
+        flex1_msg = Flex(value=flex1, header=self._generate_header("nucleo_flex_1"))
+        self._flex1_publisher.publish(flex1_msg)
+        flex2_msg = Flex(value=flex2, header=self._generate_header("nucleo_flex_2"))
+        self._flex2_publisher.publish(flex2_msg)
         # TODO: データのマッピングはnucleo側と相談
-        self._current_publisher.publish(Current(value=current))
-        self._voltage_publisher.publish(Voltage(value=voltage))
+        current_msg = Current(
+            value=current, header=self._generate_header("nucleo_current")
+        )
+        self._current_publisher.publish(current_msg)
+        voltage_msg = Voltage(
+            value=voltage, header=self._generate_header("nucleo_voltage")
+        )
+        self._voltage_publisher.publish(voltage_msg)
 
     # Sender implementations
     def _quit_callback(self, _quit: Empty) -> None:
