@@ -6,16 +6,17 @@ import sys
 import rclpy
 from packet_interfaces.msg import Current, Flex, Power, Voltage
 from rclpy.node import Node
-from std_msgs.msg import Empty, Header
+from rclpy.publisher import Publisher
+from std_msgs.msg import Empty
 
 from .mutex_serial import MutexSerial
-from .receiver import Recv
-from .sender import Sndr
+from .receiver import RecvNodeBase, RecvNodeOperator
+from .sender import SenderNodeBase, SenderNodeOperator
 
 
-class Channel(Node):
+class Channel(RecvNodeBase, SenderNodeBase):
     def __init__(self, mutex_serial: MutexSerial):
-        super().__init__("channel")
+        Node.__init__(self, "channel")
         # Senrder.__init__
         self._quit_subscription = self.create_subscription(
             Empty,
@@ -29,7 +30,7 @@ class Channel(Node):
             self._order_callback,
             10,
         )
-        self._sender = Sndr(mutex_serial)
+        self._sender_operator = SenderNodeOperator(mutex_serial)
         # Receiver.__init__
         self._current_publisher = self.create_publisher(Current, "current", 10)
         # NOTE: packet_interfaces/Composed の命名と揃える
@@ -37,49 +38,36 @@ class Channel(Node):
         self._flex2_publisher = self.create_publisher(Flex, "flex_2", 10)
         self._voltage_publisher = self.create_publisher(Voltage, "voltage", 10)
         self._timer = self.create_timer(0.5, self._recv_callback)
-        self._recv = Recv(mutex_serial)
-
-    def _generate_header(self, frame_id: str = "receiver") -> Header:
-        from builtin_interfaces.msg import Time
-
-        now = self.get_clock().now().to_msg()
-        assert isinstance(now, Time)
-        return Header(frame_id=frame_id, stamp=now)
+        self._recv_operator = RecvNodeOperator(mutex_serial)
 
     # Receiver implementation
-    def _recv_callback(self):
+    @property
+    def flex1_publisher(self) -> Publisher:
+        return self._flex1_publisher
+
+    @property
+    def flex2_publisher(self) -> Publisher:
+        return self._flex2_publisher
+
+    @property
+    def current_publisher(self) -> Publisher:
+        return self._current_publisher
+
+    @property
+    def voltage_publisher(self) -> Publisher:
+        return self._voltage_publisher
+
+    def _recv_callback(self) -> None:
         self.get_logger().debug("tick")
-        flex1, flex2, current, voltage = self._recv.receive_raw()
-        self.get_logger().info(
-            f"received from nucleo: {flex1=}, {flex2=}, {current=}, {voltage=}",
-        )
-        flex1, flex2, current, voltage = self._recv.map_values(
-            flex1,
-            flex2,
-            current,
-            voltage,
-        )
-        flex1_msg = Flex(value=flex1, header=self._generate_header("nucleo_flex_1"))
-        self._flex1_publisher.publish(flex1_msg)
-        flex2_msg = Flex(value=flex2, header=self._generate_header("nucleo_flex_2"))
-        self._flex2_publisher.publish(flex2_msg)
-        # TODO: データのマッピングはnucleo側と相談
-        current_msg = Current(
-            value=current, header=self._generate_header("nucleo_current")
-        )
-        self._current_publisher.publish(current_msg)
-        voltage_msg = Voltage(
-            value=voltage, header=self._generate_header("nucleo_voltage")
-        )
-        self._voltage_publisher.publish(voltage_msg)
+        self._recv_operator.receive_and_publish(self)
 
     # Sender implementations
     def _quit_callback(self, _quit: Empty) -> None:
-        self._sender.send_quit()
+        self._sender_operator.send_quit(self)
         self.get_logger().info("Sent quit order")
 
     def _order_callback(self, order: Power) -> None:
-        self._sender.send_power(order)
+        self._sender_operator.send_power(self, order)
         self.get_logger().info("Sent power order")
 
 
