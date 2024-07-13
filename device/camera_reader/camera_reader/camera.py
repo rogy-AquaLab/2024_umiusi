@@ -3,6 +3,7 @@ import rclpy
 from cv_bridge import CvBridge
 from rclpy.node import Node
 from sensor_msgs.msg import Image
+from std_msgs.msg import Header
 
 
 class Camera(Node):
@@ -16,10 +17,17 @@ class Camera(Node):
             self.get_logger().error("Failed to open camera")
             rclpy.shutdown()
 
+    def _generate_header(self) -> Header:
+        from builtin_interfaces.msg import Time
+
+        now = self.get_clock().now().to_msg()
+        assert isinstance(now, Time)
+        return Header(frame_id="camera_reader", stamp=now)
+
     def timer_callback(self):
         ret, frame = self.cap.read()
         if ret:
-            msg = self.bridge.cv2_to_imgmsg(frame, "bgr8")
+            msg = self.bridge.cv2_to_imgmsg(frame, "bgr8", header=self._generate_header())
             self.publisher_.publish(msg)
         else:
             self.get_logger().error("Failed to capture image")
