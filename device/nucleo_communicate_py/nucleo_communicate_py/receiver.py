@@ -29,41 +29,6 @@ class RecvNodeBase(Node, metaclass=abc.ABCMeta):
     def voltage_publisher(self) -> Publisher: ...
 
 
-class Recv:
-    def __init__(self, mutex_serial: MutexSerial) -> None:
-        self._mutex_serial = mutex_serial
-
-    # (flex1, flex2, current, voltage)
-    def receive_raw(self) -> tuple[int, int, int, int]:
-        with self._mutex_serial.lock() as serial:
-            assert isinstance(serial, Serial)
-            # Request sensor's data
-            serial.write(b"\x01")
-            # Receive nucleo's response
-            buf = serial.read(8)
-        # raw values
-        # FIXME: int.from_bytes使ったほうがいいかも
-        flex1 = (buf[0] << 0) | (buf[1] << 8)
-        flex2 = (buf[2] << 0) | (buf[3] << 8)
-        current = (buf[4] << 0) | (buf[5] << 8)
-        voltage = (buf[6] << 0) | (buf[7] << 8)
-        return (flex1, flex2, current, voltage)
-
-    def map_values(
-        self,
-        flex1: int,
-        flex2: int,
-        current: int,
-        voltage: int,
-    ) -> tuple[int, int, float, float]:
-        # TODO: current, voltageの計算はnucleo側と要相談
-        return (flex1, flex2, current / 0xFFFF, voltage / 0xFFFF)
-
-    def receive(self) -> tuple[int, int, float, float]:
-        flex1, flex2, current, voltage = self.receive_raw()
-        return self.map_values(flex1, flex2, current, voltage)
-
-
 class RecvNodeOperator:
     def __init__(self, mutex_serial: MutexSerial) -> None:
         self._mutex_serial = mutex_serial
@@ -125,7 +90,7 @@ class RecvNodeOperator:
         node.voltage_publisher.publish(voltage_msg)
 
 
-class Receiver(Node):
+class Receiver(RecvNodeBase):
     def __init__(self, mutex_serial: MutexSerial) -> None:
         super().__init__("receiver")
         self._current_publisher = self.create_publisher(Current, "current", 10)
@@ -134,40 +99,31 @@ class Receiver(Node):
         self._flex2_publisher = self.create_publisher(Flex, "flex_2", 10)
         self._voltage_publisher = self.create_publisher(Voltage, "voltage", 10)
         self._timer = self.create_timer(0.5, self._timer_callback)
-        self._recv = Recv(mutex_serial)
+        self._operator = RecvNodeOperator(mutex_serial)
 
-    def _generate_header(self, frame_id: str = "receiver") -> Header:
-        from builtin_interfaces.msg import Time
+    # override
+    @property
+    def flex1_publisher(self) -> Publisher:
+        return self._flex1_publisher
 
-        now = self.get_clock().now().to_msg()
-        assert isinstance(now, Time)
-        return Header(frame_id=frame_id, stamp=now)
+    # override
+    @property
+    def flex2_publisher(self) -> Publisher:
+        return self._flex2_publisher
+
+    # override
+    @property
+    def current_publisher(self) -> Publisher:
+        return self._current_publisher
+
+    # override
+    @property
+    def voltage_publisher(self) -> Publisher:
+        return self._voltage_publisher
 
     def _timer_callback(self) -> None:
         self.get_logger().debug("tick")
-        flex1, flex2, current, voltage = self._recv.receive_raw()
-        self.get_logger().info(
-            f"received from nucleo: {flex1=}, {flex2=}, {current=}, {voltage=}",
-        )
-        flex1, flex2, current, voltage = self._recv.map_values(
-            flex1,
-            flex2,
-            current,
-            voltage,
-        )
-        flex1_msg = Flex(value=flex1, header=self._generate_header("nucleo_flex_1"))
-        self._flex1_publisher.publish(flex1_msg)
-        flex2_msg = Flex(value=flex2, header=self._generate_header("nucleo_flex_2"))
-        self._flex2_publisher.publish(flex2_msg)
-        # TODO: データのマッピングはnucleo側と相談
-        current_msg = Current(
-            value=current, header=self._generate_header("nucleo_current")
-        )
-        self._current_publisher.publish(current_msg)
-        voltage_msg = Voltage(
-            value=voltage, header=self._generate_header("nucleo_voltage")
-        )
-        self._voltage_publisher.publish(voltage_msg)
+        self._operator.receive_and_publish(self)
 
 
 def main(args=sys.argv):
