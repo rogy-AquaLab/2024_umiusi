@@ -1,3 +1,4 @@
+import abc
 import sys
 
 import rclpy
@@ -49,6 +50,55 @@ class Sndr:
             return serial.write(buf)
 
     def send_quit(self) -> int:
+        buf = bytes([0xFF])
+        with self._mutex_serial.lock() as serial:
+            assert isinstance(serial, Serial)
+            return serial.write(buf)
+
+
+class SenderNodeBase(Node, metaclass=abc.ABCMeta): ...
+
+
+class SenderNodeOperator:
+    def __init__(self, mutex_serial: MutexSerial) -> None:
+        self._mutex_serial = mutex_serial
+
+    def send_power(self, _node: SenderNodeBase, power: Power) -> int:
+        buf = bytes(
+            [
+                # Sending notification
+                0x00,
+                # BLDC 1
+                (power.bldc[0] >> 0) & 0xFF,
+                (power.bldc[0] >> 8) & 0xFF,
+                # BLDC 2
+                (power.bldc[1] >> 0) & 0xFF,
+                (power.bldc[1] >> 8) & 0xFF,
+                # BLDC 3
+                (power.bldc[2] >> 0) & 0xFF,
+                (power.bldc[2] >> 8) & 0xFF,
+                # BLDC 4
+                (power.bldc[3] >> 0) & 0xFF,
+                (power.bldc[3] >> 8) & 0xFF,
+                # Servo 1
+                (power.servo[0] >> 0) & 0xFF,
+                (power.servo[0] >> 8) & 0xFF,
+                # Servo 2
+                (power.servo[1] >> 0) & 0xFF,
+                (power.servo[1] >> 8) & 0xFF,
+                # Servo 3
+                (power.servo[2] >> 0) & 0xFF,
+                (power.servo[2] >> 8) & 0xFF,
+                # Servo 4
+                (power.servo[3] >> 0) & 0xFF,
+                (power.servo[3] >> 8) & 0xFF,
+            ],
+        )
+        with self._mutex_serial.lock() as serial:
+            assert isinstance(serial, Serial)
+            return serial.write(buf)
+
+    def send_quit(self, _node: SenderNodeBase) -> int:
         buf = bytes([0xFF])
         with self._mutex_serial.lock() as serial:
             assert isinstance(serial, Serial)
