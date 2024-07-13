@@ -8,10 +8,8 @@ def generate_launch_description() -> LaunchDescription:
         executable="sender",
         namespace="device",
         remappings=[
-            ("/device/sender_launch", "/packet/order/quit")(
-                "/device/sender_launch",
-                "/packet/order/power",
-            ),
+            ("/device/quit", "/packet/order/quit"),
+            ("/device/order/power", "/packet/order/power"),
         ],
     )
     return LaunchDescription([sender])

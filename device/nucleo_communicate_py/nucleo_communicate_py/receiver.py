@@ -48,8 +48,8 @@ class Receiver(Node):
         super().__init__("receiver")
         self._current_publisher = self.create_publisher(Current, "current", 10)
         # NOTE: packet_interfaces/Composed の命名と揃える
-        self._flex1_publisher = self.create_publisher(Flex, "flex/1", 10)
-        self._flex2_publisher = self.create_publisher(Flex, "flex/2", 10)
+        self._flex1_publisher = self.create_publisher(Flex, "flex_1", 10)
+        self._flex2_publisher = self.create_publisher(Flex, "flex_2", 10)
         self._voltage_publisher = self.create_publisher(Voltage, "voltage", 10)
         self._timer = self.create_timer(0.5, self._timer_callback)
         self._recv = Recv(mutex_serial)

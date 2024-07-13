@@ -8,10 +8,10 @@ def generate_launch_description() -> LaunchDescription:
         executable="receiver",
         namespace="device",
         remappings=[
-            ("/device/receiver_launch", "/packet/sensor/flex/1"),
-            ("/device/receiver_launch", "/packet/sensor/flex/2"),
-            ("/device/receiver_launch", "/packet/sensor/current"),
-            ("/device/receiver_launch", "/packet/sensor/voltage"),
+            ("/device/flex_1", "/packet/sensors/flex_1"),
+            ("/device/flex_2", "/packet/sensors/flex_2"),
+            ("/device/current", "/packet/sensor/current"),
+            ("/device/voltage", "/packet/sensor/voltage"),
         ],
     )
     return LaunchDescription([receiver])

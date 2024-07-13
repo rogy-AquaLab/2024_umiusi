@@ -9,7 +9,7 @@ def generate_launch_description():
                 package="simple_joy_app",
                 executable="app",
                 namespace="app",
-                remappings=[("/app/joystick", "/device/joystick")],
+                remappings=[("/app/joystick", "/packet/joystick")],
             ),
         ],
     )
