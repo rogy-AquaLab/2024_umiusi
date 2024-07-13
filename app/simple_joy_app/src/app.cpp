@@ -7,6 +7,12 @@
 
 using power_map_msg::msg::NormalizedPower;
 
+void app::App::publish_power(power_map_msg::msg::NormalizedPower& msg) {
+    msg.header.frame_id = "simple_joy_app";
+    msg.header.stamp    = this->get_clock()->now();
+    this->power_publisher->publish(msg);
+}
+
 void app::App::joy_callback(const sensor_msgs::msg::Joy& msg) {
     RCLCPP_INFO_STREAM(this->get_logger(), "received joystick msg");
     // https://www.pygame.org/docs/ref/joystick.html#playstation-4-controller-pygame-2-x
@@ -29,21 +35,22 @@ void app::App::joy_callback(const sensor_msgs::msg::Joy& msg) {
 
     if (lstick_effective) {
         NormalizedPower msg = this->para_move_power({ lstick_v, lstick_h });
-        this->power_publisher->publish(msg);
+        this->publish_power(msg);
         return;
     }
     if (!rstick_effective) {
         NormalizedPower msg = this->stop_power();
-        this->power_publisher->publish(msg);
+        this->publish_power(msg);
         return;
     }
     if (rstick_h_effective) {
         NormalizedPower msg = this->rotate_power(rstick_h);
-        this->power_publisher->publish(msg);
+        this->publish_power(msg);
         return;
     }
     // assert(rstick_v_effective); 自明
-    this->power_publisher->publish(this->vertical_move_power(rstick_v));
+    NormalizedPower pub_msg = this->vertical_move_power(rstick_v);
+    this->publish_power(pub_msg);
 }
 
 auto app::App::para_move_power(const std::pair<double, double>& stick
