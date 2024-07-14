@@ -1,3 +1,4 @@
+import abc
 import sys
 
 import rclpy
@@ -9,14 +10,17 @@ from std_msgs.msg import Empty
 from .mutex_serial import MutexSerial
 
 
-class Sndr:
+class SenderNodeBase(Node, metaclass=abc.ABCMeta): ...
+
+
+class SenderNodeOperator:
     def __init__(self, mutex_serial: MutexSerial) -> None:
         self._mutex_serial = mutex_serial
 
-    def send_power(self, power: Power) -> int:
+    def send_power(self, _node: SenderNodeBase, power: Power) -> int:
         buf = bytes(
             [
-                # Sending nodification
+                # Sending notification
                 0x00,
                 # BLDC 1
                 (power.bldc[0] >> 0) & 0xFF,
@@ -48,7 +52,7 @@ class Sndr:
             assert isinstance(serial, Serial)
             return serial.write(buf)
 
-    def send_quit(self) -> int:
+    def send_quit(self, _node: SenderNodeBase) -> int:
         buf = bytes([0xFF])
         with self._mutex_serial.lock() as serial:
             assert isinstance(serial, Serial)
@@ -70,14 +74,14 @@ class Sender(Node):
             self._order_callback,
             10,
         )
-        self._sender = Sndr(mutex_serial)
+        self._operator = SenderNodeOperator(mutex_serial)
 
     def _quit_callback(self, _quit: Empty) -> None:
-        self._sender.send_quit()
+        self._operator.send_quit(self)
         self.get_logger().info("Sent quit order")
 
     def _order_callback(self, order: Power) -> None:
-        self._sender.send_power(order)
+        self._operator.send_power(self, order)
         self.get_logger().info("Sent power order")
 
 
