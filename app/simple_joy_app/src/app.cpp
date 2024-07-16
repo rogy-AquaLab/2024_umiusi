@@ -1,5 +1,6 @@
 #include <cmath>
 #include <functional>
+#include <numbers>
 
 #include "rclcpp_components/register_node_macro.hpp"
 
@@ -55,10 +56,8 @@ void app::App::joy_callback(const sensor_msgs::msg::Joy& msg) {
 
 auto app::App::para_move_power(const std::pair<double, double>& stick
 ) -> NormalizedPower {
-    // FIXME: C++20...?
-    constexpr double pi = 3.141592653589793;
     // TODO: provide explanation
-    constexpr double theta = pi / 4;
+    constexpr double theta = std::numbers::pi_v<double> / 4;
     // Left-Up, Right-Down
     float bldc1 = stick.first * cos(theta) + stick.second * sin(theta);
     // Right-Up, Left-Down
@@ -93,15 +92,8 @@ auto app::App::vertical_move_power(const double& vstick
 
     power_map_msg::msg::NormalizedPower msg{};
     // FIXME: tekito- ni kimeta
-    msg.bldc[0] = mag;
-    msg.bldc[1] = mag;
-    msg.bldc[2] = mag;
-    msg.bldc[3] = mag;
-
-    msg.servo[0] = sign;
-    msg.servo[1] = sign;
-    msg.servo[2] = sign;
-    msg.servo[3] = sign;
+    msg.bldc.fill(static_cast<float>(mag));
+    msg.servo.fill(static_cast<float>(sign * std::numbers::pi_v<double>));
 
     return msg;
 }
