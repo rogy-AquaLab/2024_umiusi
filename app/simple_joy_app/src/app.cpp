@@ -63,9 +63,9 @@ auto app::App::para_move_power(const std::pair<double, double>& stick
     // Right-Up, Left-Down
     float bldc2 = stick.first * cos(theta) - stick.second * sin(theta);
 
-    const double bldc_abc_max = std::max(std::abs(bldc1), std::abs(bldc2));
-    if (bldc_abc_max > 1) {
-        const double scale = 1 / bldc_abc_max;
+    const double bldc_abs_max = std::max(std::abs(bldc1), std::abs(bldc2));
+    if (bldc_abs_max > 1) {
+        const double scale = 1 / bldc_abs_max;
         bldc1 *= scale;
         bldc2 *= scale;
     }
