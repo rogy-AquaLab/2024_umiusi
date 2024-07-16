@@ -1,2 +1,1 @@
-# 2024_cavolinia
-シロカメガイ
+# 2024_umiusi

@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          path: src/2024_cavolinia
+          path: src/2024_umiusi
           submodules: true
       - run: |
           sudo apt update
