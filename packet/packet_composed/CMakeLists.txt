@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.8)
 project(packet_composed)
 
+set(CMAKE_CXX_STANDARD 20)
+
 if (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     add_compile_options(-Wall -Wextra -Wpedantic)
 endif ()
@@ -26,8 +28,6 @@ ament_target_dependencies(Composed
     sensor_msgs
     packet_interfaces
 )
-
-set_property(TARGET Composed PROPERTY CXX_STANDARD 17)
 
 target_include_directories(Composed
     PUBLIC

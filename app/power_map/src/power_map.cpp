@@ -1,6 +1,7 @@
 #include "power_map/power_map.hpp"
 
 #include <cstdint>
+#include <numbers>
 #include <string>
 #include <unordered_set>
 
@@ -85,20 +86,23 @@ auto power_map::PowerMap::subscription_callback(
     packet_interfaces::msg::Power pub_msg{};
     for (size_t i = 0; i < 4; ++i) {
         const size_t bldc_index  = bldc_placement_map[i];
-        const size_t servo_index = servo_placement_map[i];
+        const auto&  bldc_config = this->configs[bldc_index];
         // FIXME: formatが
-        const auto& bldc_config  = this->configs[bldc_index];
-        const auto& servo_config = this->configs[servo_index];
         const float bldc_radius  = msg.bldc[i] < 0 ? bldc_config.bldc_negative_radius()
                                                    : bldc_config.bldc_positive_radius();
         pub_msg.bldc[bldc_index] = static_cast<std::uint16_t>(
             bldc_config.bldc_center() + static_cast<int>(msg.bldc[i] * bldc_radius)
         );
-        const float servo_range
+
+        const size_t servo_index  = servo_placement_map[i];
+        const auto&  servo_config = this->configs[servo_index];
+        const float  servo_range
             = static_cast<float>(servo_config.servo_max() - servo_config.servo_min());
         pub_msg.servo[servo_index] = static_cast<std::uint16_t>(
             servo_config.servo_min()
-            + static_cast<int>((msg.servo[i] + 1) / 2.0 * servo_range)
+            + static_cast<int>(
+                (msg.servo[i] + 1) / 2.0 * std::numbers::pi_v<float> * servo_range
+            )
         );
     }
     this->publish_order(pub_msg);
