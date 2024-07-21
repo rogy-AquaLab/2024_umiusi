@@ -3,7 +3,7 @@
 <package format="3">
   <name>nucleo_communicate</name>
   <version>0.1.0</version>
-  <description>TODO: Package description</description>
+  <description>Nucleoとの通信周り</description>
   <maintainer email="hronok66@gmail.com">h1rono</maintainer>
   <license>MIT</license>
 
