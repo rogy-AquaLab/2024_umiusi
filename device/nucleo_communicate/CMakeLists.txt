@@ -21,6 +21,7 @@ add_library(channel
     SHARED
     src/recv_data.cpp
     src/send_data.cpp
+    src/serial_port.cpp
     src/channel.cpp
 )
 
