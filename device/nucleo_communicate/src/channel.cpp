@@ -16,7 +16,7 @@ using packet_interfaces::msg::Power;
 using packet_interfaces::msg::Voltage;
 
 void channel::Channel::quit_subscription_callback(const std_msgs::msg::Empty&) {
-    // TODO
+    this->serial.quit();
     RCLCPP_INFO(this->get_logger(), "Sent quit order");
 }
 

@@ -27,6 +27,8 @@ public:
     void send(const nucleo_com::SendData& data);
 
     auto receive() -> nucleo_com::RecvData;
+
+    void quit();
 };
 
 }
