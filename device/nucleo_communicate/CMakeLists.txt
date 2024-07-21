@@ -19,6 +19,8 @@ find_package(packet_interfaces REQUIRED)
 
 add_library(channel
     SHARED
+    src/recv_data.cpp
+    src/send_data.cpp
     src/channel.cpp
 )
 
