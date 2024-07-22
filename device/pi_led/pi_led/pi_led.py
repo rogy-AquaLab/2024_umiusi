@@ -10,19 +10,19 @@ class Led(Node):
         self._led_subscription = self.create_subscription(
             LedColor, "led_color", self.led_callback, 10
         )
-        self.led_r = LED(17)  # parameter?
-        self.led_g = LED(27)
-        self.led_b = LED(22)
+        self.led_r = LED("GPIO17")
+        self.led_g = LED("GPIO27")
+        self.led_b = LED("GPIO22")
 
     def led_callback(self, light: LedColor):
         self.led_light(self.led_r, light.red)
         self.led_light(self.led_g, light.green)
         self.led_light(self.led_b, light.blue)
         self.get_logger().info(
-            'R is "%d",G is "%d",B is "%d"' % (self.led_R, self.led_G, self.led_B)
+            'R is "%d",G is "%d",B is "%d"' % (self.led_r, self.led_g, self.led_b)
         )
 
-    def led_light(led, light):
+    def led_light(self, led, light):
         if light:
             led.on()
         else:
