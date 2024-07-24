@@ -61,7 +61,7 @@ class RecvNodeOperator:
 
     def _receive_with_node(self, node: RecvNodeBase) -> tuple[int, int, float, float]:
         flex1, flex2, current, voltage = self._receive_raw()
-        node.get_logger().info(
+        node.get_logger().debug(
             f"received from nucleo: {flex1=}, {flex2=}, {current=}, {voltage=}",
         )
         return self._map_values(flex1, flex2, current, voltage)
@@ -98,7 +98,7 @@ class Receiver(RecvNodeBase):
         self._flex1_publisher = self.create_publisher(Flex, "flex_1", 10)
         self._flex2_publisher = self.create_publisher(Flex, "flex_2", 10)
         self._voltage_publisher = self.create_publisher(Voltage, "voltage", 10)
-        self._timer = self.create_timer(0.5, self._timer_callback)
+        self._timer = self.create_timer(0.04, self._timer_callback)
         self._operator = RecvNodeOperator(mutex_serial)
 
     # override

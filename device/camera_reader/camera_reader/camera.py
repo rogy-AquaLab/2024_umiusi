@@ -10,7 +10,7 @@ class Camera(Node):
     def __init__(self):
         super().__init__("camera")
         self.publisher_ = self.create_publisher(Image, "camera_image", 10)
-        self.timer = self.create_timer(0.1, self.timer_callback)
+        self.timer = self.create_timer(0.01, self.timer_callback)
         self.cap = cv2.VideoCapture(0)
         self.bridge = CvBridge()
         if not self.cap.isOpened():
