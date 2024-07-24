@@ -8,6 +8,7 @@ device-app間で受け渡すメッセージ型
 - Current: 電流センサーの値
 - Depth: 深さセンサーの値
 - Flex: まげセンサーの値
+- LedColor: LEDの出力色
 - Power: BLDCとサーボへの出力値 (Composedに含まれない)
 - Voltage: 電圧計の値
 
