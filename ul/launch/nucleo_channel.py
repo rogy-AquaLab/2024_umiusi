@@ -9,7 +9,7 @@ def generate_launch_description() -> LaunchDescription:
     channel = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             PathJoinSubstitution(
-                [FindPackageShare("nucleo_communicate_py"), "launch", "channel_launch.py"]
+                [FindPackageShare("nucleo_communicate"), "launch", "channel_launch.py"]
             )
         )
     )
