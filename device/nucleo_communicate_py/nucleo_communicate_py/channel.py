@@ -37,7 +37,7 @@ class Channel(RecvNodeBase, SenderNodeBase):
         self._flex1_publisher = self.create_publisher(Flex, "flex_1", 10)
         self._flex2_publisher = self.create_publisher(Flex, "flex_2", 10)
         self._voltage_publisher = self.create_publisher(Voltage, "voltage", 10)
-        self._timer = self.create_timer(0.5, self._recv_callback)
+        self._timer = self.create_timer(0.04, self._recv_callback)
         self._recv_operator = RecvNodeOperator(mutex_serial)
 
     # Receiver implementation

@@ -10,7 +10,7 @@ class Camera(Node):
     def __init__(self):
         super().__init__("camera")
         self.publisher_ = self.create_publisher(Image, "camera_image", 10)
-        self.timer = self.create_timer(0.1, self.timer_callback)
+        self.timer = self.create_timer(0.01, self.timer_callback)
         param = self.declare_parameter("camera_id", 0)
         id = self.get_parameter_or(param.name, param).get_parameter_value().integer_value
         assert isinstance(id, int)

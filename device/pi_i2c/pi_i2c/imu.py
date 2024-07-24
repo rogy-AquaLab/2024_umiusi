@@ -22,7 +22,7 @@ class Imu(Node):
             self._reset_callback,
             10,
         )
-        self._timer = self.create_timer(0.5, self._timer_callback)
+        self._timer = self.create_timer(0.04, self._timer_callback)
         self._bno055_lock = Lock()
 
         # https://github.com/H1rono/rpi-bno055/blob/c6516b1920a9d31582977eb1c31f03e68bcf6a5e/rpi_bno055/scripts.py#L115-L128
