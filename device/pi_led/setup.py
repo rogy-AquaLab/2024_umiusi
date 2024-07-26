@@ -17,6 +17,8 @@ setup(
     description="LEDを光らせる",
     license="MIT",
     entry_points={
-        "console_scripts": [],
+        "console_scripts": [
+            "pi_led = pi_led.py_led:main",
+        ],
     },
 )
