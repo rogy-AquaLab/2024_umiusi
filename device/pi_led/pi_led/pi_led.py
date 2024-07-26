@@ -10,9 +10,29 @@ class Led(Node):
         self._led_subscription = self.create_subscription(
             LedColor, "led_color", self.led_callback, 10
         )
-        self.led_r = LED("GPIO17")
-        self.led_g = LED("GPIO27")
-        self.led_b = LED("GPIO22")
+        param_r = self.declare_parameter("led_pin_r", "")
+        param_g = self.declare_parameter("led_pin_g", "")
+        param_b = self.declare_parameter("led_pin_b", "")
+
+        pin_r = (
+            self.get_parameter_or(param_r.name, param_r)
+            .get_parameter_value()
+            .integer_string
+        )
+        pin_g = (
+            self.get_parameter_or(param_g.name, param_g)
+            .get_parameter_value()
+            .integer_string
+        )
+        pin_b = (
+            self.get_parameter_or(param_b.name, param_b)
+            .get_parameter_value()
+            .integer_string
+        )
+
+        self.led_r = LED(pin_r)
+        self.led_g = LED(pin_g)
+        self.led_b = LED(pin_b)
 
     def led_callback(self, light: LedColor):
         self.led_light(self.led_r, light.red)
