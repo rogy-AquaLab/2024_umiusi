@@ -19,7 +19,7 @@ class Led(Node):
         self.led_light(self.led_g, light.green)
         self.led_light(self.led_b, light.blue)
         self.get_logger().info(
-            'R is "%d",G is "%d",B is "%d"' % (self.led_r, self.led_g, self.led_b)
+            f'R is "{int(light.red)}",G is "{int(light.green)}",B is "{int(light.blue)}"'
         )
 
     def led_light(self, led, light):
