@@ -12,7 +12,7 @@ setup(
     ],
     install_requires=["setuptools"],
     zip_safe=True,
-    maintainer="saho",
+    maintainer="23-saho",
     maintainer_email="sahonorth@gmail.com",
     description="LEDを光らせる",
     license="MIT",

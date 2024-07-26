@@ -4,7 +4,7 @@
   <name>pi_led</name>
   <version>0.0.0</version>
   <description>LEDを光らせる</description>
-  <maintainer email="sahonorth@gmail.com">saho</maintainer>
+  <maintainer email="sahonorth@gmail.com">23-saho</maintainer>
   <license>MIT</license>
 
   <exec_depend>rclpy</exec_depend>
