@@ -17,17 +17,17 @@ class Led(Node):
         pin_r = (
             self.get_parameter_or(param_r.name, param_r)
             .get_parameter_value()
-            .integer_string
+            .string_value
         )
         pin_g = (
             self.get_parameter_or(param_g.name, param_g)
             .get_parameter_value()
-            .integer_string
+            .string_value
         )
         pin_b = (
             self.get_parameter_or(param_b.name, param_b)
             .get_parameter_value()
-            .integer_string
+            .string_value
         )
 
         self.led_r = LED(pin_r)
