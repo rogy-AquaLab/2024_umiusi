@@ -10,9 +10,9 @@ class Led(Node):
         self._led_subscription = self.create_subscription(
             LedColor, "led_color", self.led_callback, 10
         )
-        param_r = self.declare_parameter("led_pin_r", "GPIO 17")
-        param_g = self.declare_parameter("led_pin_g", "GPIO 27")
-        param_b = self.declare_parameter("led_pin_b", "GPIO 22")
+        param_r = self.declare_parameter("led_pin_r", "GPIO17")
+        param_g = self.declare_parameter("led_pin_g", "GPIO27")
+        param_b = self.declare_parameter("led_pin_b", "GPIO22")
 
         led_pin_r = (
             self.get_parameter_or(param_r.name, param_r)
