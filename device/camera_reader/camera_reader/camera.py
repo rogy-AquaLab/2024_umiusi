@@ -2,14 +2,14 @@ import cv2
 import rclpy
 from cv_bridge import CvBridge
 from rclpy.node import Node
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import CompressedImage
 from std_msgs.msg import Header
 
 
 class Camera(Node):
     def __init__(self):
         super().__init__("camera")
-        self.publisher_ = self.create_publisher(Image, "camera_image", 10)
+        self.publisher_ = self.create_publisher(CompressedImage, "camera_image", 10)
         self.timer = self.create_timer(0.1, self.timer_callback)
         self.cap = cv2.VideoCapture(0)
         self.bridge = CvBridge()
@@ -27,7 +27,9 @@ class Camera(Node):
     def timer_callback(self):
         ret, frame = self.cap.read()
         if ret:
-            msg = self.bridge.cv2_to_imgmsg(frame, "bgr8", header=self._generate_header())
+            self.get_logger().info("read image")
+            msg = self.bridge.cv2_to_compressed_imgmsg(frame)
+            msg.header=self._generate_header()
             self.publisher_.publish(msg)
         else:
             self.get_logger().error("Failed to capture image")
