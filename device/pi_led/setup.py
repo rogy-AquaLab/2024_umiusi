@@ -1,14 +1,14 @@
 import os
 from glob import glob
 
-from setuptools import setup
+from setuptools import find_packages, setup
 
-package_name = "camera_reader"
+package_name = "pi_led"
 
 setup(
     name=package_name,
     version="0.0.0",
-    packages=[package_name],
+    packages=find_packages(exclude=["test"]),
     data_files=[
         ("share/ament_index/resource_index/packages", ["resource/" + package_name]),
         ("share/" + package_name, ["package.xml"]),
@@ -23,14 +23,13 @@ setup(
     ],
     install_requires=["setuptools"],
     zip_safe=True,
-    maintainer="hiro",
-    maintainer_email="yoshikawa.h.ah@m.titech.ac.jp",
-    description="Camera for ROS2",
-    license="MIT license",
-    tests_require=[],
+    maintainer="23-saho",
+    maintainer_email="sahonorth@gmail.com",
+    description="LEDを光らせる",
+    license="MIT",
     entry_points={
         "console_scripts": [
-            "camera=camera_reader.camera:main",
+            "pi_led = pi_led.py_led:main",
         ],
     },
 )

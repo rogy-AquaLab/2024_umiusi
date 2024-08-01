@@ -11,7 +11,12 @@ class Camera(Node):
         super().__init__("camera")
         self.publisher_ = self.create_publisher(CompressedImage, "camera_image", 10)
         self.timer = self.create_timer(0.1, self.timer_callback)
-        self.cap = cv2.VideoCapture(0)
+        param = self.declare_parameter("camera_id", 0)
+        camera_id = (
+            self.get_parameter_or(param.name, param).get_parameter_value().integer_value
+        )
+        assert isinstance(camera_id, int)
+        self.cap = cv2.VideoCapture(camera_id)
         self.bridge = CvBridge()
         if not self.cap.isOpened():
             self.get_logger().error("Failed to open camera")
