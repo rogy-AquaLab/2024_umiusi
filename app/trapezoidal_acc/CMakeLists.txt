@@ -24,10 +24,7 @@ find_package(power_map_msg REQUIRED)
    rclcpp
    std_msgs
    power_map_msg
-   trapezoidal_acc
  )
-
- set_property(TARGET Trapezoid PROPERTY CXX_STANDARD 17)
 
  target_include_directories(Trapezoid
    PUBLIC
