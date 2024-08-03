@@ -1,10 +1,9 @@
 import cv2
+import numpy as np
 import rclpy
 from cv_bridge import CvBridge
 from rclpy.node import Node
 from sensor_msgs.msg import CompressedImage
-import numpy as np
-
 
 
 class Imshow(Node):
