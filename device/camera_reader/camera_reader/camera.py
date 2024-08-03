@@ -32,7 +32,6 @@ class Camera(Node):
     def timer_callback(self):
         ret, frame = self.cap.read()
         if ret:
-            self.get_logger().info("read image")
             msg = self.bridge.cv2_to_compressed_imgmsg(frame)
             msg.header=self._generate_header()
             self.publisher_.publish(msg)
