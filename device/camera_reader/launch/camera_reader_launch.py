@@ -29,12 +29,12 @@ def generate_launch_description() -> LaunchDescription:
         name=["camera_", index],
         parameters=[{"camera_id": index}],
         remappings=[("/device/camera_image", ["/packet/camera_image_", index])],
-        condition=IfCondition(index_specified)
+        condition=IfCondition(index_specified),
     )
     unuse_index = camera_node(
         parameters=[default_config_path],
         remappings=[("/device/camera_image", "/packet/camera_image")],
-        condition=UnlessCondition(index_specified)
+        condition=UnlessCondition(index_specified),
     )
     camera_reader = Node(
         package="camera_reader",
@@ -42,10 +42,5 @@ def generate_launch_description() -> LaunchDescription:
         namespace="device",
     )
     return LaunchDescription(
-        [
-            index_arg,
-            *use_index,
-            *unuse_index,
-            camera_reader
-        ],
+        [index_arg, *use_index, *unuse_index, camera_reader],
     )

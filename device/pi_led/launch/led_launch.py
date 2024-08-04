@@ -19,9 +19,7 @@ def led_node(**kwargs: Any) -> Node:
 def generate_launch_description() -> LaunchDescription:
     # arguments
     variant_arg = DeclareLaunchArgument(
-        "variant",
-        default_value="default",
-        choices=["default", "right", "left", "custom"]
+        "variant", default_value="default", choices=["default", "right", "left", "custom"]
     )
     param_file_arg = DeclareLaunchArgument("param_file", default_value="")
     # substitutions
@@ -46,32 +44,27 @@ def generate_launch_description() -> LaunchDescription:
     use_default = led_node(
         parameters=[right_param_file],
         remappings=[("/device/led_color", "/packet/order/led_color")],
-        condition=IfCondition(variant_is_default)
+        condition=IfCondition(variant_is_default),
     )
     use_right = led_node(
         name="led_right",
         parameters=[right_param_file],
         remappings=[("/device/led_color", "/packet/order/led_color_right")],
-        condition=IfCondition(variant_is_right)
+        condition=IfCondition(variant_is_right),
     )
     use_left = led_node(
         name="led_left",
         parameters=[left_param_file],
         remappings=[("/device/led_color", "/packet/order/led_color_left")],
-        condition=IfCondition(variant_is_left)
+        condition=IfCondition(variant_is_left),
     )
     use_custom = led_node(
         name="led_custom",
         parameters=[param_file],
         remappings=[("/device/led_color", "/packet/order/led_color_custom")],
-        condition=IfCondition(variant_is_custom)
+        condition=IfCondition(variant_is_custom),
     )
 
-    return LaunchDescription([
-        variant_arg,
-        param_file_arg,
-        use_default,
-        use_right,
-        use_left,
-        use_custom
-    ])
+    return LaunchDescription(
+        [variant_arg, param_file_arg, use_default, use_right, use_left, use_custom]
+    )

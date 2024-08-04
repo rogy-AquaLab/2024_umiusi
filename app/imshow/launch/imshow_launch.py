@@ -21,16 +21,12 @@ def generate_launch_description() -> LaunchDescription:
     indexed_imshow = imshow_node(
         name=["imshow_", index],
         remappings=[("/app/camera_image", ["/packet/camera_image_", index])],
-        condition=IfCondition(index_specified)
+        condition=IfCondition(index_specified),
     )
     unindexed_imshow = imshow_node(
         remappings=[("/app/camera_image", "/packet/camera_image")],
-        condition=UnlessCondition(index_specified)
+        condition=UnlessCondition(index_specified),
     )
     return LaunchDescription(
-        [
-            index_arg,
-            indexed_imshow,
-            unindexed_imshow
-        ],
+        [index_arg, indexed_imshow, unindexed_imshow],
     )
