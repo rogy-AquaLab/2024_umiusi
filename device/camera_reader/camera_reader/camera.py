@@ -33,7 +33,7 @@ class Camera(Node):
         ret, frame = self.cap.read()
         if ret:
             msg = self.bridge.cv2_to_compressed_imgmsg(frame)
-            msg.header=self._generate_header()
+            msg.header = self._generate_header()
             self.publisher_.publish(msg)
         else:
             self.get_logger().error("Failed to capture image")
