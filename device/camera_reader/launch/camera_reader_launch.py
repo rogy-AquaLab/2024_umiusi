@@ -36,11 +36,6 @@ def generate_launch_description() -> LaunchDescription:
         remappings=[("/device/camera_image", "/packet/camera_image")],
         condition=UnlessCondition(index_specified),
     )
-    camera_reader = Node(
-        package="camera_reader",
-        executable="camera",
-        namespace="device",
-    )
     return LaunchDescription(
-        [index_arg, *use_index, *unuse_index, camera_reader],
+        [index_arg, use_index, unuse_index],
     )
