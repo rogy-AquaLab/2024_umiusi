@@ -11,7 +11,6 @@ find_package(ament_cmake REQUIRED)
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(trapezoidal_acc REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(power_map_msg REQUIRED)
 

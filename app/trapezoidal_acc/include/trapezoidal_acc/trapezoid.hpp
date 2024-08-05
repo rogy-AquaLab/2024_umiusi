@@ -17,7 +17,7 @@ private:
     rclcpp::Subscription<power_map_msg::msg::NormalizedPower>::SharedPtr trapezoid_subscription;
 
     rclcpp::TimerBase::SharedPtr _timer;
-    power_map_msg::msg::NormalizedPower normalizedPower_msg;
+    power_map_msg::msg::NormalizedPower normalizedpower_msg;
 
     void _loop();
     void trapezoid_topic_callback(const power_map_msg::msg::NormalizedPower& msg);
@@ -25,7 +25,7 @@ private:
     double _current_velocity;
     double _target_velocity;
 
-    power_map_msg::msg::NormalizedPower _normalizedPower;
+    power_map_msg::msg::NormalizedPower _normalizedpower;
 
 };
 

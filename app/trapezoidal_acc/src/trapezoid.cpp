@@ -20,7 +20,7 @@ Trapezoid::Trapezoid():
 void Trapezoid::trapezoid_topic_callback(const power_map_msg::msg::NormalizedPower& msg)
 {
     RCLCPP_DEBUG(this->get_logger(), "Received trapezoid_message");
-    _normalizedPower= msg;
+    _normalizedpower= msg;
 }
 
 void Trapezoid::_loop() //速度のアルゴリズムがあまり理解できていないです。。
