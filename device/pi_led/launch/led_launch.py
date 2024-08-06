@@ -1,12 +1,15 @@
-import os
 from typing import Any
 
-from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.conditions import IfCondition
-from launch.substitutions import LaunchConfiguration, PythonExpression
+from launch.substitutions import (
+    LaunchConfiguration,
+    PathJoinSubstitution,
+    PythonExpression,
+)
 from launch_ros.actions import Node
+from launch_ros.substitutions import FindPackageShare
 
 
 def led_node(**kwargs: Any) -> Node:
@@ -29,16 +32,11 @@ def generate_launch_description() -> LaunchDescription:
     variant_is_right = PythonExpression([variant, "== 'right'"])
     variant_is_left = PythonExpression([variant, "== 'left'"])
     variant_is_custom = PythonExpression([variant, "== 'custom'"])
-    # file paths
-    right_param_file = os.path.join(
-        get_package_share_directory("pi_led"),
-        "config",
-        "default_param.yml",
+    right_param_file = PathJoinSubstitution(
+        [FindPackageShare("pi_led"), "config", "default_param.yml"]
     )
-    left_param_file = os.path.join(
-        get_package_share_directory("pi_led"),
-        "config",
-        "left_param.yml",
+    left_param_file = PathJoinSubstitution(
+        [FindPackageShare("pi_led"), "config", "left_param.yml"]
     )
     # exec actions
     use_default = led_node(

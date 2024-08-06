@@ -1,12 +1,15 @@
-import os
 from typing import Any
 
-from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.conditions import IfCondition, UnlessCondition
-from launch.substitutions import LaunchConfiguration, PythonExpression
+from launch.substitutions import (
+    LaunchConfiguration,
+    PathJoinSubstitution,
+    PythonExpression,
+)
 from launch_ros.actions import Node
+from launch_ros.substitutions import FindPackageShare
 
 
 def camera_node(**kwargs: Any) -> Node:
@@ -20,10 +23,8 @@ def generate_launch_description() -> LaunchDescription:
     index_arg = DeclareLaunchArgument("index", default_value="-1")
     index = LaunchConfiguration("index")
     index_specified = PythonExpression([index, ">= 0"])
-    default_config_path = os.path.join(
-        get_package_share_directory("camera_reader"),
-        "config",
-        "default_param.yml",
+    default_config_path = PathJoinSubstitution(
+        [FindPackageShare("camera_reader"), "config", "default_param.yml"]
     )
     use_index = camera_node(
         name=["camera_", index],
