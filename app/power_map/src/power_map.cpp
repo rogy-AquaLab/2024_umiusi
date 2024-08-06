@@ -22,53 +22,62 @@ void power_map::PowerMap::publish_order(packet_interfaces::msg::Power& msg) {
 auto power_map::PowerMap::create_bldc_center_cb(size_t i
 ) -> rclcpp::ParameterCallbackHandle::ParameterCallbackType {
     return [this, i](const rclcpp::Parameter& p) {
+        const int64_t v = p.as_int();
         RCLCPP_INFO_STREAM(
             this->get_logger(),
-            "received parameter update of " << "bldc_center" << (i + 1)
+            "received parameter update of " << "bldc_center" << (i + 1) << " = " << v
         );
-        this->configs[i].bldc_center(p.as_int());
+        this->configs[i].bldc_center(v);
     };
 }
 
 auto power_map::PowerMap::create_bldc_positive_radius_cb(size_t i
 ) -> rclcpp::ParameterCallbackHandle::ParameterCallbackType {
     return [this, i](const rclcpp::Parameter& p) {
+        const int64_t v = p.as_int();
         RCLCPP_INFO_STREAM(
             this->get_logger(),
-            "received parameter update of " << "bldc_positive_radius" << (i + 1)
+            "received parameter update of " << "bldc_positive_radius" << (i + 1) << " = "
+                                            << v
         );
-        this->configs[i].bldc_positive_radius(p.as_int());
+        this->configs[i].bldc_positive_radius(v);
     };
 }
 
 auto power_map::PowerMap::create_bldc_negative_radius_cb(size_t i
 ) -> rclcpp::ParameterCallbackHandle::ParameterCallbackType {
     return [this, i](const rclcpp::Parameter& p) {
+        const int64_t v = p.as_int();
         RCLCPP_INFO_STREAM(
             this->get_logger(),
-            "received parameter update of " << "bldc_negative_radius" << (i + 1)
+            "received parameter update of " << "bldc_negative_radius" << (i + 1) << " = "
+                                            << v
         );
-        this->configs[i].bldc_negative_radius(p.as_int());
+        this->configs[i].bldc_negative_radius(v);
     };
 }
 
 auto power_map::PowerMap::create_servo_min_cb(size_t i
 ) -> rclcpp::ParameterCallbackHandle::ParameterCallbackType {
     return [this, i](const rclcpp::Parameter& p) {
+        const int64_t v = p.as_int();
         RCLCPP_INFO_STREAM(
-            this->get_logger(), "received parameter update of " << "servo_min" << (i + 1)
+            this->get_logger(),
+            "received parameter update of " << "servo_min" << (i + 1) << " = " << v
         );
-        this->configs[i].servo_min(p.as_int());
+        this->configs[i].servo_min(v);
     };
 }
 
 auto power_map::PowerMap::create_servo_max_cb(size_t i
 ) -> rclcpp::ParameterCallbackHandle::ParameterCallbackType {
     return [this, i](const rclcpp::Parameter& p) {
+        const int64_t v = p.as_int();
         RCLCPP_INFO_STREAM(
-            this->get_logger(), "received parameter update of " << "servo_max" << (i + 1)
+            this->get_logger(),
+            "received parameter update of " << "servo_max" << (i + 1) << " = " << v
         );
-        this->configs[i].servo_max(p.as_int());
+        this->configs[i].servo_max(v);
     };
 }
 

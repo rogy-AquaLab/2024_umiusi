@@ -12,6 +12,6 @@ def generate_launch_description() -> LaunchDescription:
             ("/device/flex_2", "/packet/sensors/flex_2"),
             ("/device/current", "/packet/sensor/current"),
             ("/device/voltage", "/packet/sensor/voltage"),
-        ]
+        ],
     )
     return LaunchDescription([main])

@@ -14,7 +14,7 @@ def generate_launch_description():
             ("/device/voltage", "/packet/sensors/voltage"),
             # FIXME: /packet namespaceにremap
             ("/device/power", "/device/order/power"),
-            ("/device/quit", "/device/order/quit")
+            ("/device/quit", "/device/order/quit"),
         ],
     )
     return LaunchDescription([channel])
