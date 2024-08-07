@@ -21,7 +21,7 @@ def generate_launch_description():
         executable="power-map",
         namespace="app",
         parameters=[LaunchConfiguration("param_file")],
-        remappings=[("/app/power", "/device/order/power")],
+        remappings=[("/app/power", "/packet/order/power")],
         ros_arguments=["--log-level", log_level],
     )
     return LaunchDescription([param_file_arg, log_level_arg, power_map])
