@@ -19,8 +19,8 @@ void power_map::PowerMap::publish_order(packet_interfaces::msg::Power& msg) {
 }
 
 // FIXME: create_***_cbのコピペを辞めたい
-auto power_map::PowerMap::create_bldc_center_cb(size_t i
-) -> rclcpp::ParameterCallbackHandle::ParameterCallbackType {
+auto power_map::PowerMap::create_bldc_center_cb(size_t i)
+    -> rclcpp::ParameterCallbackHandle::ParameterCallbackType {
     return [this, i](const rclcpp::Parameter& p) {
         const int64_t v = p.as_int();
         RCLCPP_INFO_STREAM(
@@ -31,8 +31,8 @@ auto power_map::PowerMap::create_bldc_center_cb(size_t i
     };
 }
 
-auto power_map::PowerMap::create_bldc_positive_radius_cb(size_t i
-) -> rclcpp::ParameterCallbackHandle::ParameterCallbackType {
+auto power_map::PowerMap::create_bldc_positive_radius_cb(size_t i)
+    -> rclcpp::ParameterCallbackHandle::ParameterCallbackType {
     return [this, i](const rclcpp::Parameter& p) {
         const int64_t v = p.as_int();
         RCLCPP_INFO_STREAM(
@@ -44,8 +44,8 @@ auto power_map::PowerMap::create_bldc_positive_radius_cb(size_t i
     };
 }
 
-auto power_map::PowerMap::create_bldc_negative_radius_cb(size_t i
-) -> rclcpp::ParameterCallbackHandle::ParameterCallbackType {
+auto power_map::PowerMap::create_bldc_negative_radius_cb(size_t i)
+    -> rclcpp::ParameterCallbackHandle::ParameterCallbackType {
     return [this, i](const rclcpp::Parameter& p) {
         const int64_t v = p.as_int();
         RCLCPP_INFO_STREAM(
@@ -57,8 +57,8 @@ auto power_map::PowerMap::create_bldc_negative_radius_cb(size_t i
     };
 }
 
-auto power_map::PowerMap::create_servo_min_cb(size_t i
-) -> rclcpp::ParameterCallbackHandle::ParameterCallbackType {
+auto power_map::PowerMap::create_servo_min_cb(size_t i)
+    -> rclcpp::ParameterCallbackHandle::ParameterCallbackType {
     return [this, i](const rclcpp::Parameter& p) {
         const int64_t v = p.as_int();
         RCLCPP_INFO_STREAM(
@@ -69,8 +69,8 @@ auto power_map::PowerMap::create_servo_min_cb(size_t i
     };
 }
 
-auto power_map::PowerMap::create_servo_max_cb(size_t i
-) -> rclcpp::ParameterCallbackHandle::ParameterCallbackType {
+auto power_map::PowerMap::create_servo_max_cb(size_t i)
+    -> rclcpp::ParameterCallbackHandle::ParameterCallbackType {
     return [this, i](const rclcpp::Parameter& p) {
         const int64_t v = p.as_int();
         RCLCPP_INFO_STREAM(
@@ -94,6 +94,8 @@ auto power_map::PowerMap::subscription_callback(
 
     packet_interfaces::msg::Power pub_msg{};
     for (size_t i = 0; i < 4; ++i) {
+        constexpr float pi = std::numbers::pi_v<float>;
+
         const size_t bldc_index  = bldc_placement_map[i];
         const auto&  bldc_config = this->configs[bldc_index];
         // FIXME: formatが
@@ -109,16 +111,14 @@ auto power_map::PowerMap::subscription_callback(
             = static_cast<float>(servo_config.servo_max() - servo_config.servo_min());
         pub_msg.servo[servo_index] = static_cast<std::uint16_t>(
             servo_config.servo_min()
-            + static_cast<int>(
-                (msg.servo[i] + 1) / 2.0 * std::numbers::pi_v<float> * servo_range
-            )
+            + static_cast<int>((msg.servo[i] + pi) / (2.0 * pi) * servo_range)
         );
     }
     this->publish_order(pub_msg);
 }
 
-auto power_map::PowerMap::bldc_placement_param_cb(const rclcpp::Parameter& param
-) -> void {
+auto power_map::PowerMap::bldc_placement_param_cb(const rclcpp::Parameter& param)
+    -> void {
     RCLCPP_INFO(this->get_logger(), "received parameter update of bldc_placement");
     const auto& placement_str = param.as_string_array();
     for (size_t i = 0; i < 4; ++i) {
@@ -126,8 +126,8 @@ auto power_map::PowerMap::bldc_placement_param_cb(const rclcpp::Parameter& param
     }
 }
 
-auto power_map::PowerMap::servo_placement_param_cb(const rclcpp::Parameter& param
-) -> void {
+auto power_map::PowerMap::servo_placement_param_cb(const rclcpp::Parameter& param)
+    -> void {
     RCLCPP_INFO(this->get_logger(), "received parameter update of servo_placement");
     const auto& placement_str = param.as_string_array();
     for (size_t i = 0; i < 4; ++i) {
