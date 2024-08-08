@@ -162,6 +162,9 @@ void app::App::healthcheck() {
         color.blue  = true;
     };
 
+    RCLCPP_DEBUG_STREAM(
+        this->get_logger(), "simple_joy_app status: " << status_str(this->status)
+    );
     LedColor left_msg, right_msg;
     left_msg.header  = this->generate_header();
     right_msg.header = this->generate_header();
