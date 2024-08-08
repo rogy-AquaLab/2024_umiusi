@@ -1,3 +1,4 @@
+#include <chrono>
 #include <cmath>
 #include <functional>
 #include <numbers>
@@ -8,10 +9,25 @@
 
 using power_map_msg::msg::NormalizedPower;
 
+auto app::App::generate_header() -> std_msgs::msg::Header {
+    std_msgs::msg::Header header;
+    header.frame_id = "simple_joy_app";
+    header.stamp    = this->get_clock()->now();
+    return header;
+}
+
 void app::App::publish_power(power_map_msg::msg::NormalizedPower& msg) {
-    msg.header.frame_id = "simple_joy_app";
-    msg.header.stamp    = this->get_clock()->now();
+    msg.header = this->generate_header();
     this->power_publisher->publish(msg);
+}
+
+bool power_is_zero(const NormalizedPower& power) {
+    for (float b : power.bldc) {
+        if (std::abs(b) > 0.001) {
+            return false;
+        }
+    }
+    return true;
 }
 
 void app::App::joy_callback(const sensor_msgs::msg::Joy& msg) {
@@ -34,23 +50,18 @@ void app::App::joy_callback(const sensor_msgs::msg::Joy& msg) {
     const bool rstick_v_effective = std::abs(rstick_v) > stick_threshold;
     const bool rstick_effective   = rstick_h_effective || rstick_v_effective;
 
+    NormalizedPower pub_msg;
     if (lstick_effective) {
-        NormalizedPower msg = this->para_move_power({ lstick_v, lstick_h });
-        this->publish_power(msg);
-        return;
+        pub_msg = this->para_move_power({ lstick_v, lstick_h });
+    } else if (!rstick_effective) {
+        pub_msg = this->stop_power();
+    } else if (rstick_h_effective) {
+        pub_msg = this->rotate_power(rstick_h);
+    } else {
+        // assert(rstick_v_effective); 自明
+        pub_msg = this->vertical_move_power(rstick_v);
     }
-    if (!rstick_effective) {
-        NormalizedPower msg = this->stop_power();
-        this->publish_power(msg);
-        return;
-    }
-    if (rstick_h_effective) {
-        NormalizedPower msg = this->rotate_power(rstick_h);
-        this->publish_power(msg);
-        return;
-    }
-    // assert(rstick_v_effective); 自明
-    NormalizedPower pub_msg = this->vertical_move_power(rstick_v);
+    this->status = power_is_zero(pub_msg) ? Status::Stopped : Status::Moving;
     this->publish_power(pub_msg);
 }
 
@@ -133,16 +144,67 @@ auto app::App::stop_power() -> NormalizedPower {
     return msg;
 }
 
+void app::App::healthcheck() {
+    using packet_interfaces::msg::LedColor;
+    constexpr auto color_red = [](LedColor& color) {
+        color.red   = true;
+        color.green = false;
+        color.blue  = false;
+    };
+    constexpr auto color_green = [](LedColor& color) {
+        color.red   = false;
+        color.green = true;
+        color.blue  = false;
+    };
+    constexpr auto color_blue = [](LedColor& color) {
+        color.red   = false;
+        color.green = false;
+        color.blue  = true;
+    };
+
+    LedColor left_msg, right_msg;
+    left_msg.header  = this->generate_header();
+    right_msg.header = this->generate_header();
+    switch (this->status) {
+    case Status::NoInput:
+        color_blue(left_msg);
+        color_red(right_msg);
+        break;
+    case Status::Moving:
+        color_green(left_msg);
+        color_blue(right_msg);
+        break;
+    case Status::Stopped:
+        color_green(left_msg);
+        color_green(right_msg);
+        break;
+    }
+    this->led_left_publisher->publish(left_msg);
+    this->led_right_publisher->publish(right_msg);
+    this->status = Status::NoInput;
+}
+
 app::App::App(const rclcpp::NodeOptions& options) :
     rclcpp::Node("simple_joy_app", options),
     subscription(),
-    power_publisher() {
+    power_publisher(),
+    led_left_publisher(),
+    led_right_publisher(),
+    healthcheck_timer(),
+    status(app::Status::NoInput) {
+    using namespace std::chrono_literals;
     using std::placeholders::_1;
-    auto callback = std::bind(&app::App::joy_callback, this, _1);
+    auto joy_callback = std::bind(&app::App::joy_callback, this, _1);
     this->subscription
-        = this->create_subscription<sensor_msgs::msg::Joy>("joystick", 10, callback);
+        = this->create_subscription<sensor_msgs::msg::Joy>("joystick", 10, joy_callback);
     this->power_publisher
         = this->create_publisher<NormalizedPower>("normalized_power", 10);
+    this->led_left_publisher
+        = this->create_publisher<packet_interfaces::msg::LedColor>("led_color_left", 10);
+    this->led_right_publisher
+        = this->create_publisher<packet_interfaces::msg::LedColor>("led_color_right", 10);
+    auto healthcheck_callback = std::bind(&app::App::healthcheck, this);
+    this->healthcheck_timer   = this->create_wall_timer(100ms, healthcheck_callback);
 }
 
 RCLCPP_COMPONENTS_REGISTER_NODE(app::App)
