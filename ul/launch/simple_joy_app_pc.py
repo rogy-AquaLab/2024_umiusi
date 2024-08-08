@@ -1,5 +1,5 @@
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, GroupAction, IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.substitutions import FindPackageShare
@@ -35,4 +35,9 @@ def generate_launch_description() -> LaunchDescription:
         ),
         launch_arguments=[("param_file", power_map_param_file)],
     )
-    return LaunchDescription([power_map_param_file_arg, joystick, app, power_map])
+    nodes = GroupAction(
+        [joystick, app, power_map],
+        forwarding=False,
+        launch_configurations={"param_file": power_map_param_file},
+    )
+    return LaunchDescription([power_map_param_file_arg, nodes])

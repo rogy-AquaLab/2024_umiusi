@@ -29,13 +29,22 @@ def generate_launch_description() -> LaunchDescription:
         default_value="false",
         choices=["true", "false"],
     )
-    args = GroupAction([use_nucleo_arg, camera_variant_arg, use_led_arg], scoped=False)
+    use_imu_arg = DeclareLaunchArgument(
+        # TODO: change default value to true
+        "use_imu",
+        default_value="false",
+        choices=["true", "false"],
+    )
+    args = GroupAction(
+        [use_nucleo_arg, camera_variant_arg, use_led_arg, use_imu_arg], scoped=False
+    )
     # substitutions
     use_nucleo = LaunchConfiguration("use_nucleo")
     camera_variant = LaunchConfiguration("camera_variant")
     use_single_camera = PythonExpression(["'", camera_variant, "' == 'single'"])
     use_double_camera = PythonExpression(["'", camera_variant, "' == 'double'"])
     use_led = LaunchConfiguration("use_led")
+    use_imu = LaunchConfiguration("use_imu")
     # nodes
     nucleo_channel = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -93,13 +102,20 @@ def generate_launch_description() -> LaunchDescription:
         ],
         condition=IfCondition(use_led),
     )
+    imu = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            PathJoinSubstitution([FindPackageShare("pi_i2c"), "launch", "imu_launch.py"])
+        ),
+        condition=IfCondition(use_imu),
+    )
     nodes = GroupAction(
-        [nucleo_channel, single_camera, double_camera, led],
+        [nucleo_channel, single_camera, double_camera, led, imu],
         forwarding=False,
         launch_configurations={
             "use_nucleo": use_nucleo,
             "camera_variant": camera_variant,
             "use_led": use_led,
+            "use_imu": use_imu,
         },
     )
 
