@@ -15,7 +15,11 @@ def generate_launch_description():
         package="simple_joy_app",
         executable="app",
         namespace="app",
-        remappings=[("/app/joystick", "/packet/joystick")],
+        remappings=[
+            ("/app/joystick", "/packet/joystick"),
+            ("/app/led_color_left", "/packet/order/led_color_left"),
+            ("/app/led_color_right", "/packet/order/led_color_right"),
+        ],
         ros_arguments=["--log-level", log_level],
     )
     return LaunchDescription([log_level_arg, app])
