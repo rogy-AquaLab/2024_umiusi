@@ -17,6 +17,13 @@ from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description() -> LaunchDescription:
     # args
+    log_level_arg = DeclareLaunchArgument(
+        "log_level",
+        default_value="info",
+        choices=["debug", "info", "warn", "error", "fatal"],
+        description="Logging level for the nodes"
+    )
+    log_level = LaunchConfiguration("log_level")
     use_nucleo_arg = DeclareLaunchArgument(
         "use_nucleo", default_value="true", choices=["true", "false"]
     )
@@ -50,6 +57,7 @@ def generate_launch_description() -> LaunchDescription:
         PythonLaunchDescriptionSource(
             PathJoinSubstitution([FindPackageShare("ul"), "launch", "nucleo_channel.py"])
         ),
+        launch_arguments=[("log_level", log_level)],
         condition=IfCondition(use_nucleo),
     )
     single_camera = IncludeLaunchDescription(
@@ -58,6 +66,7 @@ def generate_launch_description() -> LaunchDescription:
                 [FindPackageShare("camera_reader"), "launch", "camera_reader_launch.py"]
             )
         ),
+        launch_arguments=[("log_level", log_level)],
         condition=IfCondition(use_single_camera),
     )
     double_camera = IncludeLaunchDescription(
@@ -66,6 +75,7 @@ def generate_launch_description() -> LaunchDescription:
                 [FindPackageShare("camera_reader"), "launch", "camera_reader_launch.py"]
             )
         ),
+        launch_arguments=[("log_level", log_level)],
         condition=IfCondition(use_double_camera),
     )
     led = GroupAction(
@@ -76,6 +86,7 @@ def generate_launch_description() -> LaunchDescription:
                         [FindPackageShare("ul"), "launch", "double_led.py"]
                     )
                 ),
+                launch_arguments=[("log_level", log_level)],
             ),
             ExecuteProcess(
                 cmd=[
@@ -106,6 +117,7 @@ def generate_launch_description() -> LaunchDescription:
         PythonLaunchDescriptionSource(
             PathJoinSubstitution([FindPackageShare("pi_i2c"), "launch", "imu_launch.py"])
         ),
+        launch_arguments=[("log_level", log_level)],
         condition=IfCondition(use_imu),
     )
     nodes = GroupAction(
