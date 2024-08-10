@@ -1,8 +1,16 @@
 from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
 
 def generate_launch_description():
+    log_level_arg = DeclareLaunchArgument(
+        "log_level",
+        default_value="info",
+        choices=["debug","info","warn","error","fatal"],
+    )
+    log_level = LaunchConfiguration("log_level")
     channel = Node(
         package="nucleo_communicate",
         executable="nucleo-channel",
@@ -15,5 +23,6 @@ def generate_launch_description():
             ("/device/power", "/packet/order/power"),
             ("/device/quit", "/packet/order/quit"),
         ],
+        ros_arguments=["--log-level",log_level],
     )
-    return LaunchDescription([channel])
+    return LaunchDescription([log_level_arg,channel])
