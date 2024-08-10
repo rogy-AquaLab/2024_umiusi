@@ -43,7 +43,8 @@ def generate_launch_description() -> LaunchDescription:
         choices=["true", "false"],
     )
     args = GroupAction(
-        [use_nucleo_arg, camera_variant_arg, use_led_arg, use_imu_arg], scoped=False
+        [log_level_arg,use_nucleo_arg, camera_variant_arg, use_led_arg, use_imu_arg],
+        scoped=False
     )
     # substitutions
     use_nucleo = LaunchConfiguration("use_nucleo")

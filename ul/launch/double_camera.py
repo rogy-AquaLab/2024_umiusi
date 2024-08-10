@@ -1,9 +1,8 @@
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument,GroupAction, IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, GroupAction, IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration,PathJoinSubstitution
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.substitutions import FindPackageShare
-
 
 def generate_launch_description() -> LaunchDescription:
     log_level_arg = DeclareLaunchArgument(
@@ -13,7 +12,6 @@ def generate_launch_description() -> LaunchDescription:
         description="Logging level for the nodes"
     )
     log_level = LaunchConfiguration("log_level")
-    
     camera0 = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             PathJoinSubstitution(
@@ -31,4 +29,4 @@ def generate_launch_description() -> LaunchDescription:
         launch_arguments=[("index", "1"),("log_level", log_level)],
     )
     cameras = GroupAction([camera0, camera1], forwarding=False)
-    return LaunchDescription([cameras])
+    return LaunchDescription([log_level_arg,cameras])
