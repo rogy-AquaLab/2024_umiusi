@@ -1,22 +1,29 @@
 from launch import LaunchDescription
-from launch.actions import GroupAction, IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, GroupAction, IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import PathJoinSubstitution
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description() -> LaunchDescription:
+    log_level_arg = DeclareLaunchArgument(
+        "log_level",
+        default_value="info",
+        choices=["debug", "info", "warn", "error", "fatal"],
+        description="Logging level for the nodes"
+    )
+    log_level = LaunchConfiguration("log_level")
     led_right = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             PathJoinSubstitution([FindPackageShare("pi_led"), "launch", "led_launch.py"])
         ),
-        launch_arguments=[("variant", "right")],
+        launch_arguments=[("variant", "right"),("log_level",log_level)],
     )
     led_left = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             PathJoinSubstitution([FindPackageShare("pi_led"), "launch", "led_launch.py"])
         ),
-        launch_arguments=[("variant", "left")],
+        launch_arguments=[("variant", "left"),("log_level",log_level)],
     )
     leds = GroupAction([led_left, led_right], forwarding=False)
-    return LaunchDescription([leds])
+    return LaunchDescription([log_level_arg,leds])
