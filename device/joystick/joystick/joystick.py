@@ -12,8 +12,10 @@ class Joystick(Node):
         super().__init__("joystick")
         self._timer = self.create_timer(0.01, self._timer_callback)
         self._joy_publisher = self.create_publisher(Joy, "joystick", 10)
-        # TODO: ここparameterで変えられるようにしたい
-        self._joystick = pygame.joystick.Joystick(0)
+        # Doing: ここparameterで変えられるようにしたい
+        joystick_id = self.declare_parameter("joystick_id", 0).get_parameter_value().integer_value
+        self._joystick = pygame.joystick.Joystick(joystick_id)
+        self._joystick.init()
         # logging
         name = self._joystick.get_name()
         self.get_logger().info(f"Using controller: {name}")
