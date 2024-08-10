@@ -2,8 +2,7 @@ from typing import Any
 
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
-from launch.conditions import IfCondition, UnlessCondition
-from launch.substitutions import LaunchConfiguration, PythonExpression
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
 
@@ -19,31 +18,17 @@ def generate_launch_description() -> LaunchDescription:
         default_value="info",
         choices=["debug","info","warn","error","fatal"],
     )
-    joystick_id_arg = DeclareLaunchArgument(
-        "joystick_id",
-        default_value="0",
-    )
-    index = LaunchConfiguration("index")
     log_level = LaunchConfiguration("log_level")
 
-    index_specified = PythonExpression([index,">= 0"])
-
-    indexed_joystick = joystick_node(
-        name=["joystick_",index],
-        remappings=[("/device/joystick","/packet/joystick")],
-        ros_arguments=["--log-level",log_level],
-        condition=IfCondition(index_specified),
-    )
-
-    unindexed_joystick = joystick_node(
-        remappings=[("/device/joystick","/packet/joystick")],
-        ros_arguments=["--log-level",log_level],
-        condition=UnlessCondition(index_specified),
+    joystick = Node(
+        package="joystick",
+        executable="joystick",
+        namespace="devide",
+        remappings=[("/device/joystick", "/packet/joystick")],
+        ros_arguments=["--log-level", log_level],
     )
 
     return LaunchDescription([
         log_level_arg,
-        joystick_id_arg,
-        indexed_joystick,
-        unindexed_joystick
+        joystick
     ])
