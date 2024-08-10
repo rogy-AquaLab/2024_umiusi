@@ -14,7 +14,6 @@ def joystick_node(**kwargs: Any) -> Node:
     return Node(**kwargs)
 
 def generate_launch_description() -> LaunchDescription:
-    index_arg = DeclareLaunchArgument("index",default_value="-1")
     log_level_arg = DeclareLaunchArgument(
         "log_level",
         default_value="info",
@@ -43,7 +42,6 @@ def generate_launch_description() -> LaunchDescription:
     )
 
     return LaunchDescription([
-        index_arg,
         log_level_arg,
         joystick_id_arg,
         indexed_joystick,
