@@ -13,7 +13,8 @@ class Joystick(Node):
         self._timer = self.create_timer(0.01, self._timer_callback)
         self._joy_publisher = self.create_publisher(Joy, "joystick", 10)
         # Doing: ここparameterで変えられるようにしたい
-        joystick_id = self.declare_parameter("joystick_id", 0).get_parameter_value().integer_value
+        param = self.declare_parameter("joystick_id", 0)
+        joystick_id = param.get_parameter_value().integer_value
         self._joystick = pygame.joystick.Joystick(joystick_id)
         self._joystick.init()
         # logging
