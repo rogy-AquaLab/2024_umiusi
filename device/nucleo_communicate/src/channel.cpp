@@ -12,12 +12,20 @@
 
 using packet_interfaces::msg::Current;
 using packet_interfaces::msg::Flex;
+using packet_interfaces::msg::NucleoState;
 using packet_interfaces::msg::Power;
 using packet_interfaces::msg::Voltage;
 
-void channel::Channel::quit_subscription_callback(const std_msgs::msg::Empty&) {
-    this->serial.quit();
-    RCLCPP_INFO(this->get_logger(), "Sent quit order");
+void channel::Channel::initialize_subscription_callback(const std_msgs::msg::Empty&) {
+    const std::lock_guard<std::mutex> _guard(this->serial_mutex);
+    this->serial.initialize();
+    RCLCPP_INFO(this->get_logger(), "Sent initialize order");
+}
+
+void channel::Channel::suspend_subscription_callback(const std_msgs::msg::Empty&) {
+    const std::lock_guard<std::mutex> _guard(this->serial_mutex);
+    this->serial.suspend();
+    RCLCPP_INFO(this->get_logger(), "Sent suspend order");
 }
 
 void channel::Channel::power_subscription_callback(const Power& msg) {
@@ -32,8 +40,16 @@ void channel::Channel::timer_callback() {
     const std::lock_guard<std::mutex> _guard(this->serial_mutex);
 
     RCLCPP_DEBUG(this->get_logger(), "tick");
-    const rclcpp::Time         now  = this->get_clock()->now();
-    const nucleo_com::RecvData data = this->serial.receive();
+    const rclcpp::Time            now        = this->get_clock()->now();
+    const nucleo_com::NucleoState state_data = this->serial.receive_state();
+    const nucleo_com::RecvData    data       = this->serial.receive();
+    {
+        NucleoState state_msg;
+        state_msg.header.frame_id = "nucleo_state";
+        state_msg.header.stamp    = now;
+        state_msg.state           = static_cast<std::uint8_t>(state_data);
+        this->state_publisher->publish(state_msg);
+    }
     {
         Flex flex1_msg;
         flex1_msg.header.frame_id = "nucleo_flex_1";
@@ -68,8 +84,10 @@ channel::Channel::Channel(const rclcpp::NodeOptions& options) :
     rclcpp::Node("channel", options),
     serial("/dev/ttyACM0"),
     serial_mutex(),
-    quit_subscription(nullptr),
+    initialize_subscription(nullptr),
+    suspend_subscription(nullptr),
     power_subscription(nullptr),
+    state_publisher(nullptr),
     flex1_publisher(nullptr),
     flex2_publisher(nullptr),
     current_publisher(nullptr),
@@ -80,20 +98,28 @@ channel::Channel::Channel(const rclcpp::NodeOptions& options) :
 
     this->serial.setup();
 
-    this->quit_subscription = this->create_subscription<std_msgs::msg::Empty>(
-        "quit", 10, std::bind(&channel::Channel::quit_subscription_callback, this, _1)
+    this->initialize_subscription = this->create_subscription<std_msgs::msg::Empty>(
+        "initialize",
+        10,
+        std::bind(&channel::Channel::initialize_subscription_callback, this, _1)
+    );
+    this->suspend_subscription = this->create_subscription<std_msgs::msg::Empty>(
+        "suspend",
+        10,
+        std::bind(&channel::Channel::suspend_subscription_callback, this, _1)
     );
     this->power_subscription = this->create_subscription<Power>(
         "power", 10, std::bind(&channel::Channel::power_subscription_callback, this, _1)
     );
 
+    this->state_publisher   = this->create_publisher<NucleoState>("nucleo_state", 10);
     this->flex1_publisher   = this->create_publisher<Flex>("flex_1", 10);
     this->flex2_publisher   = this->create_publisher<Flex>("flex_2", 10);
     this->current_publisher = this->create_publisher<Current>("current", 10);
     this->voltage_publisher = this->create_publisher<Voltage>("voltage", 10);
 
     this->timer = this->create_wall_timer(
-        40ms, std::bind(&channel::Channel::timer_callback, this)
+        70ms, std::bind(&channel::Channel::timer_callback, this)
     );
 }
 
