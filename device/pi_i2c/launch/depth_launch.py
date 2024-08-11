@@ -15,6 +15,6 @@ def generate_launch_description() -> LaunchDescription:
         package="pi_i2c",
         executable="depth",
         namespace="device",
-        ros_arguments=["--log-level",log_level],
+        ros_arguments=["--log-level", log_level],
     )
-    return LaunchDescription([log_level_arg,depth])
+    return LaunchDescription([log_level_arg, depth])

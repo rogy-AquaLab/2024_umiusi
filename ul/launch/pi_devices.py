@@ -21,7 +21,7 @@ def generate_launch_description() -> LaunchDescription:
         "log_level",
         default_value="info",
         choices=["debug", "info", "warn", "error", "fatal"],
-        description="Logging level for the nodes"
+        description="Logging level for the nodes",
     )
     log_level = LaunchConfiguration("log_level")
     use_nucleo_arg = DeclareLaunchArgument(
@@ -43,8 +43,8 @@ def generate_launch_description() -> LaunchDescription:
         choices=["true", "false"],
     )
     args = GroupAction(
-        [log_level_arg,use_nucleo_arg, camera_variant_arg, use_led_arg, use_imu_arg],
-        scoped=False
+        [log_level_arg, use_nucleo_arg, camera_variant_arg, use_led_arg, use_imu_arg],
+        scoped=False,
     )
     # substitutions
     use_nucleo = LaunchConfiguration("use_nucleo")

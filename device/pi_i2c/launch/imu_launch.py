@@ -16,6 +16,6 @@ def generate_launch_description() -> LaunchDescription:
         executable="imu",
         namespace="device",
         remappings=[("/device/imu", "/packet/sensors/imu")],
-        ros_arguments=["--log-level",log_level],
+        ros_arguments=["--log-level", log_level],
     )
-    return LaunchDescription([log_level_arg,imu])
+    return LaunchDescription([log_level_arg, imu])

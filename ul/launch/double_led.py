@@ -10,20 +10,20 @@ def generate_launch_description() -> LaunchDescription:
         "log_level",
         default_value="info",
         choices=["debug", "info", "warn", "error", "fatal"],
-        description="Logging level for the nodes"
+        description="Logging level for the nodes",
     )
     log_level = LaunchConfiguration("log_level")
     led_right = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             PathJoinSubstitution([FindPackageShare("pi_led"), "launch", "led_launch.py"])
         ),
-        launch_arguments=[("variant", "right"),("log_level",log_level)],
+        launch_arguments=[("variant", "right"), ("log_level", log_level)],
     )
     led_left = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             PathJoinSubstitution([FindPackageShare("pi_led"), "launch", "led_launch.py"])
         ),
-        launch_arguments=[("variant", "left"),("log_level",log_level)],
+        launch_arguments=[("variant", "left"), ("log_level", log_level)],
     )
     leds = GroupAction([led_left, led_right], forwarding=False)
-    return LaunchDescription([log_level_arg,leds])
+    return LaunchDescription([log_level_arg, leds])

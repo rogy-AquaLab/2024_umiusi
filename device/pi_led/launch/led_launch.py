@@ -22,7 +22,9 @@ def led_node(**kwargs: Any) -> Node:
 def generate_launch_description() -> LaunchDescription:
     # arguments
     variant_arg = DeclareLaunchArgument(
-        "variant", default_value="default", choices=["default", "right", "left", "custom"]
+        "variant",
+        default_value="default",
+        choices=["default", "right", "left", "custom"],
     )
     param_file_arg = DeclareLaunchArgument("param_file", default_value="")
     # substitutions

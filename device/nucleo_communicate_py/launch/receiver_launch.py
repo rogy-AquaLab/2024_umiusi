@@ -21,6 +21,6 @@ def generate_launch_description() -> LaunchDescription:
             ("/device/current", "/packet/sensor/current"),
             ("/device/voltage", "/packet/sensor/voltage"),
         ],
-        ros_arguments=["--log-level",log_level],
+        ros_arguments=["--log-level", log_level],
     )
-    return LaunchDescription([log_level_arg,receiver])
+    return LaunchDescription([log_level_arg, receiver])

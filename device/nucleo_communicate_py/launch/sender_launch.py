@@ -21,4 +21,4 @@ def generate_launch_description() -> LaunchDescription:
         ],
         ros_arguments=["--log-level", log_level],
     )
-    return LaunchDescription([log_level_arg,sender])
+    return LaunchDescription([log_level_arg, sender])

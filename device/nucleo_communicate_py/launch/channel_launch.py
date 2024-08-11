@@ -23,6 +23,6 @@ def generate_launch_description() -> LaunchDescription:
             ("/device/quit", "/packet/order/quit"),
             ("/device/order/power", "/packet/order/power"),
         ],
-        ros_arguments=["--log-level",log_level]
+        ros_arguments=["--log-level", log_level],
     )
-    return LaunchDescription([log_level_arg,main])
+    return LaunchDescription([log_level_arg, main])

@@ -10,7 +10,7 @@ def generate_launch_description() -> LaunchDescription:
         "log_level",
         default_value="info",
         choices=["debug", "info", "warn", "error", "fatal"],
-        description="Logging level for the nodes"
+        description="Logging level for the nodes",
     )
     log_level = LaunchConfiguration("log_level")
     channel = IncludeLaunchDescription(
@@ -21,4 +21,4 @@ def generate_launch_description() -> LaunchDescription:
         ),
         launch_arguments=[("log_level", log_level)],
     )
-    return LaunchDescription([log_level_arg,GroupAction([channel], forwarding=False)])
+    return LaunchDescription([log_level_arg, GroupAction([channel], forwarding=False)])

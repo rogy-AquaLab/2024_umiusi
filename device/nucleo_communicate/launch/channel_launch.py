@@ -8,7 +8,7 @@ def generate_launch_description():
     log_level_arg = DeclareLaunchArgument(
         "log_level",
         default_value="info",
-        choices=["debug","info","warn","error","fatal"],
+        choices=["debug", "info", "warn", "error", "fatal"],
     )
     log_level = LaunchConfiguration("log_level")
     channel = Node(
@@ -23,6 +23,6 @@ def generate_launch_description():
             ("/device/power", "/packet/order/power"),
             ("/device/quit", "/packet/order/quit"),
         ],
-        ros_arguments=["--log-level",log_level],
+        ros_arguments=["--log-level", log_level],
     )
-    return LaunchDescription([log_level_arg,channel])
+    return LaunchDescription([log_level_arg, channel])

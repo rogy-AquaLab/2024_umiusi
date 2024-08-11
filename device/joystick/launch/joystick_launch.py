@@ -12,23 +12,21 @@ def joystick_node(**kwargs: Any) -> Node:
     kwargs["namespace"] = "device"
     return Node(**kwargs)
 
+
 def generate_launch_description() -> LaunchDescription:
     log_level_arg = DeclareLaunchArgument(
         "log_level",
         default_value="info",
-        choices=["debug","info","warn","error","fatal"],
+        choices=["debug", "info", "warn", "error", "fatal"],
     )
     log_level = LaunchConfiguration("log_level")
 
     joystick = Node(
         package="joystick",
         executable="joystick",
-        namespace="devide",
+        namespace="device",
         remappings=[("/device/joystick", "/packet/joystick")],
         ros_arguments=["--log-level", log_level],
     )
 
-    return LaunchDescription([
-        log_level_arg,
-        joystick
-    ])
+    return LaunchDescription([log_level_arg, joystick])
