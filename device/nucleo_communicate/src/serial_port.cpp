@@ -64,7 +64,12 @@ auto SerialPort::receive() -> RecvData {
     return RecvData(std::move(buffer));
 }
 
-void SerialPort::quit() {
+void SerialPort::initialize() {
+    std::uint8_t header = 0xFE;
+    fwrite(&header, sizeof(std::uint8_t), 1, this->serial);
+}
+
+void SerialPort::suspend() {
     std::uint8_t header = 0xFF;
     fwrite(&header, sizeof(std::uint8_t), 1, this->serial);
 }

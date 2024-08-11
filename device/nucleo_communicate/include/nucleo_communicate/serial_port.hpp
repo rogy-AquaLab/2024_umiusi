@@ -31,7 +31,10 @@ public:
 
     auto receive() -> nucleo_com::RecvData;
 
-    void quit();
+    /// nucleoに初期化命令を送る *SerialPortの初期化ではない
+    void initialize();
+
+    void suspend();
 };
 
 }
