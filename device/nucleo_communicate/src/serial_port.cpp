@@ -43,6 +43,14 @@ void SerialPort::send(const SendData& data) {
     );
 }
 
+auto SerialPort::receive_state() -> NucleoState {
+    std::uint8_t header = 0x02;
+    fwrite(&header, sizeof(std::uint8_t), 1, this->serial);
+    std::uint8_t recv_data = 0;
+    fread(&recv_data, sizeof(std::uint8_t), 1, this->serial);
+    return static_cast<NucleoState>(recv_data);
+}
+
 auto SerialPort::receive() -> RecvData {
     std::uint8_t header = 0x01;
     fwrite(&header, sizeof(std::uint8_t), 1, this->serial);
