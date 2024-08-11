@@ -8,7 +8,7 @@ Nucleoとの通信周り
 
 ## Executables
 
-- `nucleo-chanel`: `Channel`Nodeをspin
+- `nucleo-channel`: `Channel`Nodeをspin
 
 ## Launches
 

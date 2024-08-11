@@ -15,4 +15,4 @@ device-app間で受け渡すメッセージ型
 (see also)
 
 - sensor_msgs/msg/Image: カメライメージ (**これはComposedに含めない**)
-- std_msgs/msg/Empty: quit命令の型
+- std_msgs/msg/Empty: nucleoのsuspend, initialize命令の型
