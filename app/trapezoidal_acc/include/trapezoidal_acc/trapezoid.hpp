@@ -2,6 +2,7 @@
 #define TRAPEZOIDAL_ACC_TRAPEZOID_HPP
 
 #include <memory>
+#include <array>
 #include <power_map_msg/msg/detail/normalized_power__struct.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include "std_msgs/msg/string.hpp"
@@ -26,6 +27,9 @@ private:
     double target_velocity;
 
     power_map_msg::msg::NormalizedPower normalized_power;
+
+    std::array<double, 4> previous_bldc;
+    std::array<double, 4> previous_servo; 
 
 };
 
