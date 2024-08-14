@@ -9,6 +9,7 @@ def generate_launch_description() -> LaunchDescription:
         "log_level",
         default_value="info",
         choices=["debug", "info", "warn", "error", "fatal"],
+        description="Logging level for the nodes",
     )
     log_level = LaunchConfiguration("log_level")
     main = Node(
