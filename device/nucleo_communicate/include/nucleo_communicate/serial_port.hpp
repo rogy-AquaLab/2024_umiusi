@@ -5,6 +5,7 @@
 #include <string>
 #include <termios.h>
 
+#include "nucleo_communicate/nucleo_state.hpp"
 #include "nucleo_communicate/recv_data.hpp"
 #include "nucleo_communicate/send_data.hpp"
 
@@ -26,9 +27,14 @@ public:
     // https://github.com/rogy-AquaLab/2024_umiusi_nucleo
     void send(const nucleo_com::SendData& data);
 
+    auto receive_state() -> nucleo_com::NucleoState;
+
     auto receive() -> nucleo_com::RecvData;
 
-    void quit();
+    /// nucleoに初期化命令を送る *SerialPortの初期化ではない
+    void initialize();
+
+    void suspend();
 };
 
 }

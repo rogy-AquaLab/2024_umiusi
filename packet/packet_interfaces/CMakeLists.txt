@@ -20,6 +20,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
     msg/Depth.msg
     msg/Flex.msg
     msg/LedColor.msg
+    msg/NucleoState.msg
     msg/Power.msg
     msg/Voltage.msg
     DEPENDENCIES std_msgs sensor_msgs
