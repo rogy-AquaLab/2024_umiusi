@@ -29,7 +29,7 @@ setup(
     license="MIT",
     entry_points={
         "console_scripts": [
-            "pi_led = pi_led.pi_led:main",
+            "pi_led = pi_led.py_led:main",
         ],
     },
 )
