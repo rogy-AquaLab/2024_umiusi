@@ -17,7 +17,7 @@ class Camera(Node):
         )
         assert isinstance(camera_id, int)
         self.cap = cv2.VideoCapture(camera_id)
-         # カメラ解像度の設定
+        # カメラ解像度の設定
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)  # 横幅640ピクセル
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)  # 縦幅480ピクセル
         # バッファサイズの設定

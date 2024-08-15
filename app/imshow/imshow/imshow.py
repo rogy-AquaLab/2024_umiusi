@@ -10,8 +10,11 @@ from sensor_msgs.msg import CompressedImage
 class Imshow(Node):
     def __init__(self):
         super().__init__("imshow")
-        qos_profile = QoSProfile(reliability=ReliabilityPolicy.BEST_EFFORT,
-                                 history=HistoryPolicy.KEEP_LAST,depth=10)
+        qos_profile = QoSProfile(
+            reliability=ReliabilityPolicy.BEST_EFFORT,
+            history=HistoryPolicy.KEEP_LAST,
+            depth=10,
+        )
         self.subscription = self.create_subscription(
             CompressedImage,
             "camera_image",
