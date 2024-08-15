@@ -1,6 +1,6 @@
 /**:
   ros__parameters:
-  #right
-  led_pin_r: "GPIO17"
-  led_pin_g: "GPIO27"
-  led_pin_b: "GPIO22"
+    #right
+    led_pin_r: "GPIO17"
+    led_pin_g: "GPIO27"
+    led_pin_b: "GPIO22"
