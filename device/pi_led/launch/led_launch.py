@@ -28,10 +28,10 @@ def generate_launch_description() -> LaunchDescription:
     # substitutions
     variant = LaunchConfiguration("variant")
     param_file = LaunchConfiguration("param_file")
-    variant_is_default = PythonExpression([variant, "== 'default'"])
-    variant_is_right = PythonExpression([variant, "== 'right'"])
-    variant_is_left = PythonExpression([variant, "== 'left'"])
-    variant_is_custom = PythonExpression([variant, "== 'custom'"])
+    variant_is_default = PythonExpression(["'", variant, "' == 'default'"])
+    variant_is_right = PythonExpression(["'", variant, "' == 'right'"])
+    variant_is_left = PythonExpression(["'", variant, "' == 'left'"])
+    variant_is_custom = PythonExpression(["'", variant, "' == 'custom'"])
     right_param_file = PathJoinSubstitution(
         [FindPackageShare("pi_led"), "config", "default_param.yml"]
     )
