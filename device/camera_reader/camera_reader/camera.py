@@ -10,13 +10,18 @@ class Camera(Node):
     def __init__(self):
         super().__init__("camera")
         self.publisher_ = self.create_publisher(CompressedImage, "camera_image", 10)
-        self.timer = self.create_timer(0.01, self.timer_callback)
+        self.timer = self.create_timer(0.03, self.timer_callback)
         param = self.declare_parameter("camera_id", 0)
         camera_id = (
             self.get_parameter_or(param.name, param).get_parameter_value().integer_value
         )
         assert isinstance(camera_id, int)
         self.cap = cv2.VideoCapture(camera_id)
+        # カメラ解像度の設定
+        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)  # 横幅640ピクセル
+        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)  # 縦幅480ピクセル
+        # バッファサイズの設定
+        self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
         self.bridge = CvBridge()
         if not self.cap.isOpened():
             self.get_logger().error("Failed to open camera")
