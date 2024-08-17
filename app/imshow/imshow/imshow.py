@@ -3,17 +3,23 @@ import numpy as np
 import rclpy
 from cv_bridge import CvBridge
 from rclpy.node import Node
+from rclpy.qos import HistoryPolicy, QoSProfile, ReliabilityPolicy
 from sensor_msgs.msg import CompressedImage
 
 
 class Imshow(Node):
     def __init__(self):
         super().__init__("imshow")
+        qos_profile = QoSProfile(
+            reliability=ReliabilityPolicy.BEST_EFFORT,
+            history=HistoryPolicy.KEEP_LAST,
+            depth=10,
+        )
         self.subscription = self.create_subscription(
             CompressedImage,
             "camera_image",
             self.listener_callback,
-            10,
+            qos_profile,
         )
         self.bridge = CvBridge()
 

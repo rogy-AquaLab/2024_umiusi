@@ -17,6 +17,11 @@ class Camera(Node):
         )
         assert isinstance(camera_id, int)
         self.cap = cv2.VideoCapture(camera_id)
+        # カメラ解像度の設定
+        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+        # バッファサイズの設定
+        self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
         self.bridge = CvBridge()
         if not self.cap.isOpened():
             self.get_logger().error("Failed to open camera")
