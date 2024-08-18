@@ -196,8 +196,8 @@ auto power_map::PowerMap::on_set_parameters_cb(
 power_map::PowerMap::PowerMap(const rclcpp::NodeOptions& options) :
     rclcpp::Node("power_map", options) {
     constexpr int DEFAULT_BLDC_CENTER          = 1480;
-    constexpr int DEFAULT_BLDC_POSITIVE_RADIUS = 250;
-    constexpr int DEFAULT_BLDC_NEGATIVE_RADIUS = 250;
+    constexpr int DEFAULT_BLDC_POSITIVE_RADIUS = 150;
+    constexpr int DEFAULT_BLDC_NEGATIVE_RADIUS = 150;
     constexpr int DEFAULT_SERVO_MIN            = 500;
     constexpr int DEFAULT_SERVO_MAX            = 2400;
 
