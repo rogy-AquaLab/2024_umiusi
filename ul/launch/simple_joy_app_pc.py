@@ -38,6 +38,9 @@ def generate_launch_description() -> LaunchDescription:
     nodes = GroupAction(
         [joystick, app, power_map],
         forwarding=False,
-        launch_configurations={"param_file": power_map_param_file},
+        launch_configurations={
+            "param_file": power_map_param_file,
+            "power_map_param_file": power_map_param_file,
+        },
     )
     return LaunchDescription([power_map_param_file_arg, nodes])
