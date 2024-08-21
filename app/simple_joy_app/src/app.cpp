@@ -44,12 +44,22 @@ void app::App::joy_callback(const sensor_msgs::msg::Joy& msg) {
     const double rstick_h = msg.axes[2];
     const double rstick_v = -msg.axes[3];
 
+    const bool rbutton_left       = msg.buttons[0];
+    const bool rbutton_down       = msg.buttons[1];
     const bool lstick_h_effective = std::abs(lstick_h) > stick_threshold;
     const bool lstick_v_effective = std::abs(lstick_v) > stick_threshold;
     const bool lstick_effective   = lstick_h_effective || lstick_v_effective;
     const bool rstick_h_effective = std::abs(rstick_h) > stick_threshold;
     const bool rstick_v_effective = std::abs(rstick_v) > stick_threshold;
     const bool rstick_effective   = rstick_h_effective || rstick_v_effective;
+
+    if (rbutton_left) {
+        std_msgs::msg::Empty pub_msg;
+        this->initialize_publisher->publish(pub_msg);
+    } else if (rbutton_down) {
+        std_msgs::msg::Empty pub_msg;
+        this->suspend_publisher->publish(pub_msg);
+    }
 
     NormalizedPower pub_msg;
     if (lstick_effective) {
@@ -207,6 +217,8 @@ app::App::App(const rclcpp::NodeOptions& options) :
     power_publisher(),
     led_left_publisher(),
     led_right_publisher(),
+    initialize_publisher(),
+    suspend_publisher(),
     healthcheck_timer(),
     status(app::Status::NoInput),
     nucleo_state(app::NucleoState::Suspend),
@@ -227,6 +239,10 @@ app::App::App(const rclcpp::NodeOptions& options) :
         = this->create_publisher<packet_interfaces::msg::LedColor>("led_color_left", 10);
     this->led_right_publisher
         = this->create_publisher<packet_interfaces::msg::LedColor>("led_color_right", 10);
+    this->initialize_publisher
+        = this->create_publisher<std_msgs::msg::Empty>("order/initialize", 10);
+    this->suspend_publisher
+        = this->create_publisher<std_msgs::msg::Empty>("order/suspend", 10);
     auto healthcheck_callback = std::bind(&app::App::healthcheck, this);
     this->healthcheck_timer   = this->create_wall_timer(100ms, healthcheck_callback);
 }

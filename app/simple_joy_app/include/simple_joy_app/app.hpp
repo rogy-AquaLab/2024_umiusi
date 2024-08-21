@@ -6,6 +6,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/joy.hpp>
+#include <std_msgs/msg/empty.hpp>
 #include <std_msgs/msg/header.hpp>
 
 #include <packet_interfaces/msg/led_color.hpp>
@@ -26,6 +27,9 @@ private:
 
     rclcpp::Publisher<packet_interfaces::msg::LedColor>::SharedPtr led_left_publisher;
     rclcpp::Publisher<packet_interfaces::msg::LedColor>::SharedPtr led_right_publisher;
+
+    rclcpp::Publisher<std_msgs::msg::Empty>::SharedPtr initialize_publisher;
+    rclcpp::Publisher<std_msgs::msg::Empty>::SharedPtr suspend_publisher;
 
     rclcpp::TimerBase::SharedPtr healthcheck_timer;
 
