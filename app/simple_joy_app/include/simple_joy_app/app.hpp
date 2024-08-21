@@ -1,6 +1,7 @@
 #ifndef SIMPLE_JOY_APP_APP_HPP
 #define SIMPLE_JOY_APP_APP_HPP
 
+#include <optional>
 #include <utility>
 
 #include <rclcpp/rclcpp.hpp>
@@ -26,6 +27,8 @@ private:
     rclcpp::TimerBase::SharedPtr healthcheck_timer;
 
     app::Status status;
+
+    std::optional<rclcpp::Time> vertical_move_start_at;
 
     auto generate_header() -> std_msgs::msg::Header;
 

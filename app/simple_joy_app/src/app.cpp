@@ -8,6 +8,7 @@
 #include "simple_joy_app/app.hpp"
 
 using power_map_msg::msg::NormalizedPower;
+using namespace std::chrono_literals;
 
 auto app::App::generate_header() -> std_msgs::msg::Header {
     std_msgs::msg::Header header;
@@ -52,13 +53,19 @@ void app::App::joy_callback(const sensor_msgs::msg::Joy& msg) {
 
     NormalizedPower pub_msg;
     if (lstick_effective) {
-        pub_msg = this->para_move_power({ lstick_v, lstick_h });
+        this->vertical_move_start_at = std::nullopt;
+        pub_msg                      = this->para_move_power({ lstick_v, lstick_h });
     } else if (!rstick_effective) {
-        pub_msg = this->stop_power();
+        this->vertical_move_start_at = std::nullopt;
+        pub_msg                      = this->stop_power();
     } else if (rstick_h_effective) {
-        pub_msg = this->rotate_power(rstick_h);
+        this->vertical_move_start_at = std::nullopt;
+        pub_msg                      = this->rotate_power(rstick_h);
     } else {
         // assert(rstick_v_effective); 自明
+        if (!this->vertical_move_start_at.has_value()) {
+            this->vertical_move_start_at = this->get_clock()->now();
+        }
         pub_msg = this->vertical_move_power(rstick_v);
     }
     this->status = power_is_zero(pub_msg) ? Status::Stopped : Status::Moving;
@@ -98,7 +105,12 @@ auto app::App::para_move_power(const std::pair<double, double>& stick
 
 auto app::App::vertical_move_power(const double& vstick
 ) -> power_map_msg::msg::NormalizedPower {
-    const double mag  = std::abs(vstick);
+    const auto duration_rclcpp = this->get_clock()->now()
+                                 - this->vertical_move_start_at.value();
+    const auto duration    = duration_rclcpp.to_chrono<std::chrono::milliseconds>();
+    const bool affect_bldc = duration > 500ms;
+
+    const double mag  = std::abs(vstick) * (affect_bldc ? 1.0 : 0.0);
     const double sign = std::signbit(vstick) ? -1 : 1;
 
     power_map_msg::msg::NormalizedPower msg{};
@@ -194,7 +206,8 @@ app::App::App(const rclcpp::NodeOptions& options) :
     led_left_publisher(),
     led_right_publisher(),
     healthcheck_timer(),
-    status(app::Status::NoInput) {
+    status(app::Status::NoInput),
+    vertical_move_start_at(std::nullopt) {
     using namespace std::chrono_literals;
     using std::placeholders::_1;
     auto joy_callback = std::bind(&app::App::joy_callback, this, _1);
