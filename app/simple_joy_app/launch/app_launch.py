@@ -17,6 +17,7 @@ def generate_launch_description():
         namespace="app",
         remappings=[
             ("/app/joystick", "/packet/joystick"),
+            ("/app/nucleo_state", "/packet/nucleo_state"),
             ("/app/led_color_left", "/packet/order/led_color_left"),
             ("/app/led_color_right", "/packet/order/led_color_right"),
         ],
