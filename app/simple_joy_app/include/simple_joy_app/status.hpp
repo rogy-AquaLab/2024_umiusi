@@ -22,6 +22,12 @@ std::string status_str(const Status& status) {
                                       : STATUS_NO_INPUT_STR;
 }
 
+enum class NucleoState : std::uint8_t {
+    Initializing = 0,
+    Suspend      = 1,
+    Running      = 2,
+};
+
 }
 
 #endif // SIMPLE_JOY_APP_STATUS_HPP

@@ -72,6 +72,11 @@ void app::App::joy_callback(const sensor_msgs::msg::Joy& msg) {
     this->publish_power(pub_msg);
 }
 
+void app::App::nucleo_state_callback(const packet_interfaces::msg::NucleoState& msg) {
+    RCLCPP_DEBUG_STREAM(this->get_logger(), "received nucleo_state msg");
+    this->nucleo_state = static_cast<NucleoState>(msg.state);
+}
+
 auto app::App::para_move_power(const std::pair<double, double>& stick
 ) -> NormalizedPower {
     // TODO: provide explanation
@@ -178,21 +183,17 @@ void app::App::healthcheck() {
         this->get_logger(), "simple_joy_app status: " << status_str(this->status)
     );
     LedColor left_msg, right_msg;
-    left_msg.header  = this->generate_header();
+    left_msg.header = this->generate_header();
+    switch (this->nucleo_state) {
+    case NucleoState::Suspend:      color_red(left_msg); break;
+    case NucleoState::Initializing: color_blue(left_msg); break;
+    case NucleoState::Running:      color_green(left_msg); break;
+    }
     right_msg.header = this->generate_header();
     switch (this->status) {
-    case Status::NoInput:
-        color_blue(left_msg);
-        color_red(right_msg);
-        break;
-    case Status::Moving:
-        color_green(left_msg);
-        color_blue(right_msg);
-        break;
-    case Status::Stopped:
-        color_green(left_msg);
-        color_green(right_msg);
-        break;
+    case Status::NoInput: color_red(right_msg); break;
+    case Status::Stopped: color_blue(right_msg); break;
+    case Status::Moving:  color_green(right_msg); break;
     }
     this->led_left_publisher->publish(left_msg);
     this->led_right_publisher->publish(right_msg);
@@ -201,18 +202,25 @@ void app::App::healthcheck() {
 
 app::App::App(const rclcpp::NodeOptions& options) :
     rclcpp::Node("simple_joy_app", options),
-    subscription(),
+    joy_subscription(),
+    nucleo_state_subscription(),
     power_publisher(),
     led_left_publisher(),
     led_right_publisher(),
     healthcheck_timer(),
     status(app::Status::NoInput),
+    nucleo_state(app::NucleoState::Suspend),
     vertical_move_start_at(std::nullopt) {
     using namespace std::chrono_literals;
     using std::placeholders::_1;
     auto joy_callback = std::bind(&app::App::joy_callback, this, _1);
-    this->subscription
+    this->joy_subscription
         = this->create_subscription<sensor_msgs::msg::Joy>("joystick", 10, joy_callback);
+    auto ns_callback = std::bind(&app::App::nucleo_state_callback, this, _1);
+    this->nucleo_state_subscription
+        = this->create_subscription<packet_interfaces::msg::NucleoState>(
+            "nucleo_state", 10, ns_callback
+        );
     this->power_publisher
         = this->create_publisher<NormalizedPower>("normalized_power", 10);
     this->led_left_publisher
