@@ -20,6 +20,8 @@ def generate_launch_description():
             ("/app/nucleo_state", "/packet/nucleo_state"),
             ("/app/led_color_left", "/packet/order/led_color_left"),
             ("/app/led_color_right", "/packet/order/led_color_right"),
+            ("/app/order/initialize", "/packet/order/initialize"),
+            ("/app/order/suspend", "/packet/order/suspend"),
         ],
         ros_arguments=["--log-level", log_level],
     )
