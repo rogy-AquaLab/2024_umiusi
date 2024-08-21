@@ -127,7 +127,7 @@ auto app::App::vertical_move_power(const double& vstick
 }
 
 auto app::App::rotate_power(const double& hstick) -> power_map_msg::msg::NormalizedPower {
-    const double mag  = std::abs(hstick);
+    const double mag  = std::abs(hstick) * 0.7;
     const double sign = std::signbit(hstick) ? -1 : 1;
 
     NormalizedPower msg{};
