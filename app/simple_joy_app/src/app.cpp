@@ -123,6 +123,7 @@ auto app::App::vertical_move_power(const double& vstick
     const auto duration_rclcpp = this->get_clock()->now()
                                  - this->vertical_move_start_at.value();
     const auto duration    = duration_rclcpp.to_chrono<std::chrono::milliseconds>();
+    // TODO: 500msをパラメータにする
     const bool affect_bldc = duration > 500ms;
 
     const double mag  = std::abs(vstick) * (affect_bldc ? 1.0 : 0.0);
