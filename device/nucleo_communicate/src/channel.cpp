@@ -28,8 +28,14 @@ void channel::Channel::suspend_subscription_callback(const std_msgs::msg::Empty&
     RCLCPP_INFO(this->get_logger(), "Sent suspend order");
 }
 
+/* タイマーとパワーsubscriptionは頻繁に呼ばれることを想定してnon-blockingに */
+
 void channel::Channel::power_subscription_callback(const Power& msg) {
-    const std::lock_guard<std::mutex> _guard(this->serial_mutex);
+    const std::unique_lock<std::mutex> lock(this->serial_mutex, std::try_to_lock);
+
+    if (!lock.owns_lock()) {
+        return;
+    }
 
     const nucleo_com::SendData data = nucleo_com::SendData::from_msg(msg);
     this->serial.send(data);
@@ -37,7 +43,11 @@ void channel::Channel::power_subscription_callback(const Power& msg) {
 }
 
 void channel::Channel::timer_callback() {
-    const std::lock_guard<std::mutex> _guard(this->serial_mutex);
+    const std::unique_lock<std::mutex> lock(this->serial_mutex, std::try_to_lock);
+
+    if (!lock.owns_lock()) {
+        return;
+    }
 
     RCLCPP_DEBUG(this->get_logger(), "tick");
     const rclcpp::Time            now        = this->get_clock()->now();
