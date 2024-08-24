@@ -1,6 +1,8 @@
 #include <chrono>
 #include <functional>
 #include <mutex>
+#include <optional>
+#include <rclcpp/logging.hpp>
 #include <utility>
 
 #include <rclcpp/time.hpp>
@@ -18,64 +20,81 @@ using packet_interfaces::msg::Voltage;
 
 void channel::Channel::initialize_subscription_callback(const std_msgs::msg::Empty&) {
     const std::lock_guard<std::mutex> _guard(this->serial_mutex);
-    this->serial.initialize();
-    RCLCPP_INFO(this->get_logger(), "Sent initialize order");
+    const bool                        success = this->serial.initialize();
+    if (success) {
+        RCLCPP_INFO(this->get_logger(), "Sent initialize order");
+    } else {
+        RCLCPP_ERROR(this->get_logger(), "Failed to send initialize order");
+    }
 }
 
 void channel::Channel::suspend_subscription_callback(const std_msgs::msg::Empty&) {
     const std::lock_guard<std::mutex> _guard(this->serial_mutex);
-    this->serial.suspend();
-    RCLCPP_INFO(this->get_logger(), "Sent suspend order");
+    const bool                        success = this->serial.suspend();
+    if (success) {
+        RCLCPP_INFO(this->get_logger(), "Sent suspend order");
+    } else {
+        RCLCPP_ERROR(this->get_logger(), "Failed to send suspend order");
+    }
 }
 
 void channel::Channel::power_subscription_callback(const Power& msg) {
     const std::lock_guard<std::mutex> _guard(this->serial_mutex);
 
-    const nucleo_com::SendData data = nucleo_com::SendData::from_msg(msg);
-    this->serial.send(data);
-    RCLCPP_INFO(this->get_logger(), "Sent power order");
+    const nucleo_com::SendData data    = nucleo_com::SendData::from_msg(msg);
+    const bool                 success = this->serial.send(data);
+    if (success) {
+        RCLCPP_INFO(this->get_logger(), "Sent power order");
+    } else {
+        RCLCPP_ERROR(this->get_logger(), "Failed to send power order");
+    }
 }
 
 void channel::Channel::timer_callback() {
     const std::lock_guard<std::mutex> _guard(this->serial_mutex);
 
     RCLCPP_DEBUG(this->get_logger(), "tick");
-    const rclcpp::Time            now        = this->get_clock()->now();
-    const nucleo_com::NucleoState state_data = this->serial.receive_state();
-    const nucleo_com::RecvData    data       = this->serial.receive();
-    {
+    const rclcpp::Time now = this->get_clock()->now();
+
+    const std::optional<nucleo_com::NucleoState> state_data
+        = this->serial.receive_state();
+    if (state_data.has_value()) {
         NucleoState state_msg;
         state_msg.header.frame_id = "nucleo_state";
         state_msg.header.stamp    = now;
-        state_msg.state           = static_cast<std::uint8_t>(state_data);
+        state_msg.state           = static_cast<std::uint8_t>(state_data.value());
         this->state_publisher->publish(state_msg);
+    }
+    const std::optional<nucleo_com::RecvData> data = this->serial.receive();
+    if (!data.has_value()) {
+        return;
     }
     {
         Flex flex1_msg;
         flex1_msg.header.frame_id = "nucleo_flex_1";
         flex1_msg.header.stamp    = now;
-        flex1_msg.value           = data.flex1_value();
+        flex1_msg.value           = data->flex1_value();
         this->flex1_publisher->publish(std::move(flex1_msg));
     }
     {
         Flex flex2_msg;
         flex2_msg.header.frame_id = "nucleo_flex_2";
         flex2_msg.header.stamp    = now;
-        flex2_msg.value           = data.flex2_value();
+        flex2_msg.value           = data->flex2_value();
         this->flex2_publisher->publish(std::move(flex2_msg));
     }
     {
         Current current_msg;
         current_msg.header.frame_id = "nucleo_current";
         current_msg.header.stamp    = now;
-        current_msg.value           = data.current_value();
+        current_msg.value           = data->current_value();
         this->current_publisher->publish(std::move(current_msg));
     }
     {
         Voltage voltage_msg;
         voltage_msg.header.frame_id = "nucleo_voltage";
         voltage_msg.header.stamp    = now;
-        voltage_msg.value           = data.voltage_value();
+        voltage_msg.value           = data->voltage_value();
         this->voltage_publisher->publish(std::move(voltage_msg));
     }
 }
@@ -84,6 +103,7 @@ channel::Channel::Channel(const rclcpp::NodeOptions& options) :
     rclcpp::Node("channel", options),
     serial("/dev/ttyACM0"),
     serial_mutex(),
+    order_failed_at(std::nullopt),
     initialize_subscription(nullptr),
     suspend_subscription(nullptr),
     power_subscription(nullptr),
