@@ -20,6 +20,7 @@ class Camera(Node):
         # カメラ解像度の設定
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+        self.cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*"MJPG"))
         # バッファサイズの設定
         self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
         self.bridge = CvBridge()
