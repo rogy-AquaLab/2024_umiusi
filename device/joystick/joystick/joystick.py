@@ -10,7 +10,7 @@ from std_msgs.msg import Header
 class Joystick(Node):
     def __init__(self):
         super().__init__("joystick")
-        self._timer = self.create_timer(0.01, self._timer_callback)
+        self._timer = self.create_timer(0.05, self._timer_callback)
         self._joy_publisher = self.create_publisher(Joy, "joystick", 10)
         # TODO: ここparameterで変えられるようにしたい
         self._joystick = pygame.joystick.Joystick(0)
