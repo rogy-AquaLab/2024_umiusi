@@ -17,13 +17,18 @@ def generate_launch_description() -> LaunchDescription:
         PythonLaunchDescriptionSource(
             PathJoinSubstitution([FindPackageShare("pi_led"), "launch", "led_launch.py"])
         ),
-        launch_arguments=[("variant", "right"), ("log_level", log_level)],
+        launch_arguments=[("variant", "right")],
     )
     led_left = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             PathJoinSubstitution([FindPackageShare("pi_led"), "launch", "led_launch.py"])
         ),
-        launch_arguments=[("variant", "left"), ("log_level", log_level)],
+        launch_arguments=[("variant", "left")],
     )
-    leds = GroupAction([led_left, led_right], forwarding=False)
+    leds = GroupAction([led_left, led_right],
+                       forwarding=False,
+                       launch_configurations={
+                           "log_level":log_level,
+                       }
+    )
     return LaunchDescription([log_level_arg, leds])

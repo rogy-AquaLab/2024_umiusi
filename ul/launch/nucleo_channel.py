@@ -18,7 +18,11 @@ def generate_launch_description() -> LaunchDescription:
             PathJoinSubstitution(
                 [FindPackageShare("nucleo_communicate"), "launch", "channel_launch.py"]
             )
-        ),
-        launch_arguments=[("log_level", log_level)],
+        )
     )
-    return LaunchDescription([log_level_arg, GroupAction([channel], forwarding=False)])
+    nodes = GroupAction(
+        actions=[channel],
+        forwarding=False,
+        launch_configurations={"log_level":log_level},
+    )
+    return LaunchDescription([log_level_arg, nodes])

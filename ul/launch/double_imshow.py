@@ -20,7 +20,7 @@ def generate_launch_description() -> LaunchDescription:
                 [FindPackageShare("imshow"), "launch", "imshow_launch.py"]
             )
         ),
-        launch_arguments=[("index", "0"), ("log_level", log_level)],
+        launch_arguments=[("index", "0")],
     )
     imshow1 = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -28,7 +28,12 @@ def generate_launch_description() -> LaunchDescription:
                 [FindPackageShare("imshow"), "launch", "imshow_launch.py"]
             )
         ),
-        launch_arguments=[("index", "1"), ("log_level", log_level)],
+        launch_arguments=[("index", "1")],
     )
-    imshows = GroupAction([imshow0, imshow1], forwarding=False)
+    imshows = GroupAction([imshow0, imshow1],
+                          forwarding=False,
+                          launch_configurations={
+                              "log_level":log_level,
+                          }
+    )
     return LaunchDescription([log_level_arg, imshows])
