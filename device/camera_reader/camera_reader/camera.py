@@ -38,6 +38,9 @@ class Camera(Node):
     def timer_callback(self):
         ret, frame = self.cap.read()
         if ret:
+            exposure_time = self.cap.get(cv2.CAP_PROP_EXPOSURE)
+            if exposure_time >= 0:
+                self.get_logger().info(f"Exposure time: {exposure_time}")
             msg = self.bridge.cv2_to_compressed_imgmsg(frame)
             msg.header = self._generate_header()
             self.publisher_.publish(msg)
