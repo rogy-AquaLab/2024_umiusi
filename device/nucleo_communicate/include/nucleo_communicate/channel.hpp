@@ -2,6 +2,7 @@
 #define NUCLEO_COMMUNICATE_CHANNEL_HPP
 
 #include <mutex>
+#include <optional>
 
 #include <packet_interfaces/msg/current.hpp>
 #include <packet_interfaces/msg/flex.hpp>
@@ -21,6 +22,8 @@ class Channel : public rclcpp::Node {
 private:
     nucleo_com::SerialPort serial;
     std::mutex             serial_mutex;
+
+    std::optional<rclcpp::Time> order_failed_at;
 
     rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr initialize_subscription;
     rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr suspend_subscription;
