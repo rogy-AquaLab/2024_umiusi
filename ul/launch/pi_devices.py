@@ -24,9 +24,8 @@ def generate_launch_description() -> LaunchDescription:
         "camera_variant", default_value="single", choices=["none", "single", "double"]
     )
     use_led_arg = DeclareLaunchArgument(
-        # TODO: change default value to true
         "use_led",
-        default_value="false",
+        default_value="true",
         choices=["true", "false"],
     )
     use_imu_arg = DeclareLaunchArgument(
