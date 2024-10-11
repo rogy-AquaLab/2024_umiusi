@@ -32,7 +32,7 @@ void SerialPort::setup() {
     ioctl(fd, TCSETS, &tio);
 }
 
-void SerialPort::send(const SendData& data) {
+bool SerialPort::send(const SendData& data) {
     std::uint8_t header = 0x00;
     fwrite(&header, sizeof(std::uint8_t), 1, this->serial);
     fwrite(
@@ -41,17 +41,25 @@ void SerialPort::send(const SendData& data) {
         data.buffer.size(),
         this->serial
     );
+    std::uint8_t res_header = ~header;
+    fread(&res_header, sizeof(std::uint8_t), 1, this->serial);
+    return res_header == header;
 }
 
-auto SerialPort::receive_state() -> NucleoState {
+auto SerialPort::receive_state() -> std::optional<NucleoState> {
     std::uint8_t header = 0x02;
     fwrite(&header, sizeof(std::uint8_t), 1, this->serial);
     std::uint8_t recv_data = 0;
     fread(&recv_data, sizeof(std::uint8_t), 1, this->serial);
+    std::uint8_t res_header = ~header;
+    fread(&res_header, sizeof(std::uint8_t), 1, this->serial);
+    if (res_header != header) {
+        return std::nullopt;
+    }
     return static_cast<NucleoState>(recv_data);
 }
 
-auto SerialPort::receive() -> RecvData {
+auto SerialPort::receive() -> std::optional<RecvData> {
     std::uint8_t header = 0x01;
     fwrite(&header, sizeof(std::uint8_t), 1, this->serial);
     RecvData::BufferType buffer{};
@@ -61,15 +69,26 @@ auto SerialPort::receive() -> RecvData {
         buffer.size(),
         this->serial
     );
+    std::uint8_t res_header = ~header;
+    fread(&res_header, sizeof(std::uint8_t), 1, this->serial);
+    if (res_header != header) {
+        return std::nullopt;
+    }
     return RecvData(std::move(buffer));
 }
 
-void SerialPort::initialize() {
+bool SerialPort::initialize() {
     std::uint8_t header = 0xFE;
     fwrite(&header, sizeof(std::uint8_t), 1, this->serial);
+    std::uint8_t res_header = ~header;
+    fread(&res_header, sizeof(std::uint8_t), 1, this->serial);
+    return res_header == header;
 }
 
-void SerialPort::suspend() {
+bool SerialPort::suspend() {
     std::uint8_t header = 0xFF;
     fwrite(&header, sizeof(std::uint8_t), 1, this->serial);
+    std::uint8_t res_header = ~header;
+    fread(&res_header, sizeof(std::uint8_t), 1, this->serial);
+    return res_header == header;
 }
