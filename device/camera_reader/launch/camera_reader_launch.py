@@ -21,6 +21,13 @@ def camera_node(**kwargs: Any) -> Node:
 
 def generate_launch_description() -> LaunchDescription:
     index_arg = DeclareLaunchArgument("index", default_value="-1")
+    log_level_arg = DeclareLaunchArgument(
+        "log_level",
+        default_value="info",
+        choices=["debug", "info", "warn", "error", "fatal"],
+        description="Logging level for the nodes",
+    )
+    log_level = LaunchConfiguration("log_level")
     index = LaunchConfiguration("index")
     index_specified = PythonExpression([index, ">= 0"])
     default_config_path = PathJoinSubstitution(
@@ -30,13 +37,15 @@ def generate_launch_description() -> LaunchDescription:
         name=["camera_", index],
         parameters=[{"camera_id": index}],
         remappings=[("/device/camera_image", ["/packet/camera_image_", index])],
+        ros_arguments=["--log-level", log_level],
         condition=IfCondition(index_specified),
     )
     unuse_index = camera_node(
         parameters=[default_config_path],
         remappings=[("/device/camera_image", "/packet/camera_image")],
+        ros_arguments=["--log-level", log_level],
         condition=UnlessCondition(index_specified),
     )
     return LaunchDescription(
-        [index_arg, use_index, unuse_index],
+        [index_arg, log_level_arg,use_index, unuse_index],
     )
