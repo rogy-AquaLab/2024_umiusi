@@ -1,6 +1,7 @@
 #ifndef NUCLEO_COMMUNICATE_SERIAL_PORT_HPP
 #define NUCLEO_COMMUNICATE_SERIAL_PORT_HPP
 
+#include <optional>
 #include <stdio.h>
 #include <string>
 #include <termios.h>
@@ -25,16 +26,16 @@ public:
     void setup();
 
     // https://github.com/rogy-AquaLab/2024_umiusi_nucleo
-    void send(const nucleo_com::SendData& data);
+    bool send(const nucleo_com::SendData& data);
 
-    auto receive_state() -> nucleo_com::NucleoState;
+    auto receive_state() -> std::optional<nucleo_com::NucleoState>;
 
-    auto receive() -> nucleo_com::RecvData;
+    auto receive() -> std::optional<nucleo_com::RecvData>;
 
     /// nucleoに初期化命令を送る *SerialPortの初期化ではない
-    void initialize();
+    bool initialize();
 
-    void suspend();
+    bool suspend();
 };
 
 }
